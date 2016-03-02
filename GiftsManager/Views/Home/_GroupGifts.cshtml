@@ -1,0 +1,62 @@
+﻿@using GiftsManager.Helper
+@model GiftsManager.ViewModels.Home.GroupGiftsViewModel
+
+@if (Model.Users != null && Model.Users.Count > 0)
+{
+    foreach (var user in Model.Users)
+    {
+        if (user.WishList != null && user.WishList.Count > 0)
+        {
+            <div class="akordeon">
+                <div class="akordeon-item">
+                    <div class="akordeon-item-head">
+                        <div class="akordeon-item-head-container">
+                            <div class="akordeon-heading">
+                                <h3>@user.FirstName @user.LastName Gifts Ideas</h3>
+                                <input type="hidden" class="giftsAccordionsUserEmail" value="@user.Email"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="akordeon-item-body">
+                        <div class="akordeon-item-content">
+                            <table class="flat-table">
+                                <tbody>
+                                <tr>
+                                    <th>Gift</th>
+                                    <th>Status</th>
+                                </tr>
+                                @foreach (var item in EventHelper.GetWishListByEvent(user.WishList, Model.EventName))
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+
+                                        @if (item.Status == GiftsManager.Models.Gift.StatusOption.Open)
+                                        {
+                                            <td>
+                                                Open
+                                                <button type="button" id="@item.Id" data-user="@user.Id" class="btn btn-success btnTakeIt">Take it</button>
+                                            </td>
+                                        }
+                                        else if (item.Status == GiftsManager.Models.Gift.StatusOption.Reserved)
+                                        {
+                                            <td>Reserved By @item.Buyer.FirstName @item.Buyer.LastName</td>
+                                        }
+                                        else if (item.Status == GiftsManager.Models.Gift.StatusOption.Bought)
+                                        {
+                                            <td>Bought By @item.Buyer.FirstName @item.Buyer.LastName</td>
+                                        }
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+else
+{
+    <label>There is no user for this event</label>
+}

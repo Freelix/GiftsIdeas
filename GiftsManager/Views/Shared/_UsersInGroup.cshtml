@@ -1,0 +1,25 @@
+﻿@model GiftsManager.ViewModels.Shared.ActualGroupViewModel
+
+<h2>Members List</h2>
+
+<div id="usersList">
+    <ol class="rounded-list">
+        @foreach (var item in Model.ActualGroup.Users)
+        {
+            <li class="userAnchor">
+                <a href="#"><strong>@item.FirstName @item.LastName (@item.Email)</strong>
+                    @if (Model.IsAdmin)
+                    {
+                        <i class="fa fa-trash-o delete-user"></i>
+                    }
+                </a>
+                <input type="hidden" class="userAnchorEmail" value="@item.Email" />
+            </li>
+        }
+    </ol>
+
+    @if (Model.ActualGroup.GroupAdmin.Equals(Model.User.Email) && Model.IsAdmin)
+    {
+        <a id="addUserLink" href="#">Add a user</a>
+    }
+</div>

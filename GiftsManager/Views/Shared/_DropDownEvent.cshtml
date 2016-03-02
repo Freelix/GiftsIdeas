@@ -1,0 +1,37 @@
+﻿@model GiftsManager.ViewModels.Shared.EventDropDownViewModel
+
+<div class="dropdown">
+    @if (Model.Events != null && Model.Events.Count() > 0)
+    {
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownEventId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Select an Event
+        </button>
+
+         if (Model.IsAdmin)
+         {
+             <div class="addEventDiv">
+                 <i class="fa fa-plus fa-lg"></i>
+             </div>
+
+             <div class="deleteGroupEvent deleteEvent">
+                 <i class="fa fa-trash-o fa-lg"></i>
+             </div>
+         }
+
+        <ul class="events dropdown-menu">
+            @foreach (var item in Model.Events)
+            {
+                <li><a href="#">@item.Text</a></li>
+            }
+        </ul>
+    }
+    else
+    {
+        <label>There is no event in this group</label>
+
+        if (Model.IsAdmin)
+        {
+            <a id="addEventLink" href="#">Add an event</a>
+        }
+    }
+</div>

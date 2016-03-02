@@ -1,0 +1,51 @@
+﻿@model GiftsManager.ViewModels.Authentication.SignInViewModel
+
+@{
+    ViewBag.Title = "Sign In";
+}
+
+<div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        @using (Html.BeginForm("SignIn", "Authentication", FormMethod.Post, new { role = "login", @class="authentication-form" } ))
+        {
+            @*<img src="http://i.imgur.com/RcmcLv4.png" class="img-responsive" alt="" />
+
+            <div>
+                @Html.TextBoxFor(m => m.User.Email, new { placeholder = "Email", @class = "form-control input-lg" })
+                @Html.ValidationMessageFor(m => m.User.Email)
+            </div>
+            <div>
+                @Html.PasswordFor(m => m.User.Password, new { placeholder = "Password", @class = "form-control input-lg" })
+                @Html.ValidationMessageFor(m => m.User.Password)
+            </div>
+
+            <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>*@
+
+            <div class="form">
+                <div class="header"><h2>Sign In</h2></div>
+                <div class="login">
+                    <form action="">
+                        <ul class="authentication-ul">
+                            <li>
+                                <span class="un"><i class="fa fa-user"></i></span>@Html.TextBoxFor(m => m.User.Email, new { placeholder = "Email", @class = "text", @required  = "required" })
+                            </li>
+                            <li>
+                                <span class="un"><i class="fa fa-lock"></i></span>@Html.PasswordFor(m => m.User.Password, new { placeholder = "Password", @class = "text", @required  = "required" })
+                            </li>
+                            <li>
+                                <input type="submit" value="SIGN IN" class="authentication-btn">
+                            </li>
+                        </ul>
+                    </form>
+                </div><br />
+                <div class="sign">
+                    <div class="need">Need new account ?</div>
+                    @Html.ActionLink("Sign Up", "SignUp", "Authentication", null, new { @class = "up" })
+                </div>
+            </div>
+        }
+
+        <br />
+    </div>
+</div>
+

@@ -1,0 +1,28 @@
+﻿@model GiftsManager.ViewModels.Authentication.SignInViewModel
+
+<ul class="nav navbar-nav">
+    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+    <li class="hidden">
+        <a href="#page-top"></a>
+    </li>
+
+    @if (Model.Authenticated)
+    {
+        <li>
+            @Html.ActionLink("Hi " + Model.User.FirstName, "UserProfile", "Profile", null, new { @class = "page-scroll" })
+        </li>
+        <li>
+            @Html.ActionLink("Sign Out", "SignOut", "Authentication", null, new { @class = "page-scroll" })
+        </li>
+    }
+    else
+    {
+        <li>
+            @Html.ActionLink("Sign Up", "SignUp", "Authentication", null, new { @class = "page-scroll" })
+        </li>
+        <li>
+            @Html.ActionLink("Sign In", "SignIn", "Authentication", null, new { @class = "page-scroll" })
+        </li>
+    }
+</ul>
+

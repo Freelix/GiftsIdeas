@@ -1,0 +1,80 @@
+﻿@model GiftsManager.ViewModels.Profile.GiftsViewModel
+
+<h2 class="tablesTitle">WishList</h2>
+
+@if (Model.WishList != null && Model.WishList.Count > 0)
+{
+    <table class="flat-table wishlistTable profileTable">
+        <tbody>
+        <tr>
+            <th>WishList</th>
+            <th>Remove</th>
+        </tr>
+        @foreach (var item in Model.WishList)
+        {
+            <tr>
+                <td><strong>@item.Name</strong></td>
+                <td><i class="fa fa-trash-o"></i></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<a id="addGiftLink" href="#">Add a gift</a>
+
+@if (Model.ReservedGifts != null && Model.ReservedGifts.Count > 0)
+{
+    <h2 class="tablesTitle">Reserved Gifts</h2>
+
+    <table class="flat-table reservedGitfsTable profileTable">
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <th>User</th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model.ReservedGifts)
+            {
+            <tr>
+                <td><strong>@item.Gift.Name</strong></td>
+                <td><strong>@item.User.FirstName @item.User.LastName</strong></td>
+                <td>
+                    <i class="fa fa-shopping-cart buy-or-remove-item cart"></i>
+                    <i class="fa fa-trash-o buy-or-remove-item trash"></i>
+                    <input type="hidden" class="userId" value="@item.User.Id" />
+                    <input type="hidden" class="giftId" value="@item.Gift.Id"/>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (Model.BoughtGifts != null && Model.BoughtGifts.Count > 0)
+{
+    <h2 class="tablesTitle">Bought Gifts</h2>
+
+    <table class="flat-table profileTable">
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <th>User</th>
+                <th>Price</th>
+            </tr>
+            @foreach (var item in Model.BoughtGifts)
+            {
+            <tr>
+                <td><strong>@item.Gift.Name</strong></td>
+                <td><strong>@item.User.FirstName @item.User.LastName</strong></td>
+                <td><strong>@item.Price $</strong></td>
+            </tr>
+            }
+            <tr>
+                <td></td>
+                <td></td>
+                <td><strong>@Model.BoughtGifts.Select(x => x.Price).Sum() $</strong></td>
+            </tr>
+        </tbody>
+    </table>
+}

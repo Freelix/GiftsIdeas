@@ -1,0 +1,31 @@
+﻿@model GiftsManager.ViewModels.Shared.GroupDropDownViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Assets/Scripts/Common/jquery.akordeon.js"></script>
+    <script type="text/javascript" src="~/Assets/Scripts/Pages/Home/ajaxCalls.js"></script>
+}
+
+@if (Model.User != null)
+{
+    <h2 class="h2Title">@Model.User.FirstName</h2>
+
+    <div id="DropDownGroupDiv">
+        @Html.Partial("_DropDownGroup", Model)
+    </div>
+
+    <div id="GroupUsersDiv"></div>
+    <div id="DropDownEventDiv"></div>
+    <div id="GiftsDiv"></div>
+}
+else
+{
+    <h2 class="h2Title">
+        Welcome to Gifts Manager <br/><br />
+        Please Sign In to proceed
+    </h2>
+}

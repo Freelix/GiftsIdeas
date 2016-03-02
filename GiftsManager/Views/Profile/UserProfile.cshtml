@@ -1,0 +1,21 @@
+﻿@model GiftsManager.ViewModels.Shared.GroupDropDownViewModel
+
+@{
+    ViewBag.Title = Model.User.FirstName + " " + Model.User.LastName;
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Assets/Scripts/Pages/Profile/ajaxCalls.js"></script>
+}
+
+<h2 class="h2Title">@Model.User.FirstName Profile</h2>
+<input type="hidden" id="userEmail" name="userEmail" value="@Model.User.FirstName @Model.User.LastName (@Model.User.Email)"/>
+
+<div id="DropDownGroupDiv">
+    @Html.Partial("_DropDownGroup", Model)
+</div>
+
+<div id="GroupUsersDiv"></div>
+<div id="DropDownEventDiv"></div>
+<div id="GiftsDiv"></div>
