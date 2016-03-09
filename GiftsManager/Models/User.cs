@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace GiftsManager.Models
 {
-    public class User
+    public sealed class User
     {
         public User()
         {
@@ -16,11 +13,9 @@ namespace GiftsManager.Models
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
         [Required]
-        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         [Required]
@@ -35,6 +30,6 @@ namespace GiftsManager.Models
 
         public string Phone { get; set; }
 
-        public virtual ICollection<Group> Groups { get; set; }
+        public ICollection<Group> Groups { get; set; }
     }
 }

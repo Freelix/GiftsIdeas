@@ -1,6 +1,4 @@
-﻿using System.Web;
-using System.Web.Mvc;
-using GiftsManager.Helper;
+﻿using System.Web.Mvc;
 
 namespace GiftsManager
 {

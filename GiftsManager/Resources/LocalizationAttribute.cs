@@ -18,7 +18,7 @@ namespace GiftsManager.Resources
             }
             catch (Exception e)
             {
-                throw new NotSupportedException(string.Format("ERROR: Invalid language code '{0}'.", lang));
+                throw new NotSupportedException($"ERROR: Invalid language code '{lang}'.");
             }
         }
     }

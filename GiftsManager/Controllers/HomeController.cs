@@ -5,31 +5,27 @@ using GiftsManager.ViewModels.Home;
 using System.Web.Mvc;
 using GiftsManager.Helper;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using GiftsManager.Models;
+using GiftsManager.Models.Dal.IDal;
 
 namespace GiftsManager.Controllers
 {
     public class HomeController : BaseController
     {
-        private IDalUser dalUser;
-        private IDalGroup dalGroup;
-        private IDalGift dalGift;
-        private IDalEvent dalEvent;
+        private readonly IDalUser _dalUser;
+        private readonly IDalGroup _dalGroup;
+        private readonly IDalGift _dalGift;
 
-        public HomeController() : this(new DalUser(), new DalGroup(), new DalGift(), new DalEvent())
+        public HomeController() : this(new DalUser(), new DalGroup(), new DalGift())
         {
 
         }
 
-        private HomeController(IDalUser dalUser, IDalGroup dalGroup, IDalGift dalGift, IDalEvent dalEvent)
+        private HomeController(IDalUser dalUser, IDalGroup dalGroup, IDalGift dalGift)
         {
-            this.dalUser = dalUser;
-            this.dalGroup = dalGroup;
-            this.dalGift = dalGift;
-            this.dalEvent = dalEvent;
+            _dalUser = dalUser;
+            _dalGroup = dalGroup;
+            _dalGift = dalGift;
         }
 
         public ActionResult _Navigation()
@@ -41,7 +37,7 @@ namespace GiftsManager.Controllers
             
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                viewModel.User = dalUser.GetUserByEmail(HttpContext.User.Identity.Name);
+                viewModel.User = _dalUser.GetUserByEmail(HttpContext.User.Identity.Name);
             }
             
             return PartialView(viewModel);
@@ -49,7 +45,7 @@ namespace GiftsManager.Controllers
 
         public ActionResult Index()
         {
-            return View(GroupHelper.GetGroups(dalUser, HttpContext.User.Identity.Name, false, true));
+            return View(GroupHelper.GetGroups(_dalUser, HttpContext.User.Identity.Name, false, true));
         }
 
         #region AjaxPosts
@@ -57,7 +53,7 @@ namespace GiftsManager.Controllers
         [HttpPost]
         public ActionResult LoadEvents(string groupName)
         {
-            return PartialView("_DropDownEvent", EventHelper.GetEvents(dalGroup, groupName, false));
+            return PartialView("_DropDownEvent", EventHelper.GetEvents(_dalGroup, groupName, false));
         }
 
         [HttpPost]
@@ -65,8 +61,8 @@ namespace GiftsManager.Controllers
         {
             ActualGroupViewModel vm = new ActualGroupViewModel()
             {
-                ActualGroup = dalGroup.GetGroupByName(groupName),
-                User = dalUser.GetUserByEmail(HttpContext.User.Identity.Name),
+                ActualGroup = _dalGroup.GetGroupByName(groupName),
+                User = _dalUser.GetUserByEmail(HttpContext.User.Identity.Name),
                 IsAdmin = false
             };
 
@@ -83,7 +79,7 @@ namespace GiftsManager.Controllers
         public ActionResult BuyGift(string id, string userId, string groupName, string price)
         {
             if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(groupName) && !string.IsNullOrWhiteSpace(price))
-                dalGift.BuyGift(Convert.ToInt32(id), Convert.ToInt32(userId), double.Parse(price, CultureInfo.InvariantCulture), HttpContext.User.Identity.Name);
+                _dalGift.BuyGift(Convert.ToInt32(id), Convert.ToInt32(userId), double.Parse(price, CultureInfo.InvariantCulture), HttpContext.User.Identity.Name);
 
             return Content("");
         }
@@ -92,7 +88,7 @@ namespace GiftsManager.Controllers
         public ActionResult ReserveGift(string id, string userId, string groupName)
         {
             if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(groupName))
-                dalGift.ReserveGift(Convert.ToInt32(id), Convert.ToInt32(userId), HttpContext.User.Identity.Name);
+                _dalGift.ReserveGift(Convert.ToInt32(id), Convert.ToInt32(userId), HttpContext.User.Identity.Name);
 
             return Content("");
         }
@@ -103,13 +99,13 @@ namespace GiftsManager.Controllers
 
         private GroupGiftsViewModel GetGroupGiftsDetails(string eventName, string groupName)
         {
-            var group = dalGroup.GetGroupByName(groupName);
-            var user = dalUser.GetUserByEmail(HttpContext.User.Identity.Name);
-            var allUsers = dalGroup.GetAllUsersButMe(group, user);
+            var group = _dalGroup.GetGroupByName(groupName);
+            var user = _dalUser.GetUserByEmail(HttpContext.User.Identity.Name);
+            var allUsers = _dalGroup.GetAllUsersButMe(group, user);
 
             return new GroupGiftsViewModel()
             {
-                ActualGroup = dalGroup.GetGroupByName(groupName),
+                ActualGroup = _dalGroup.GetGroupByName(groupName),
                 Users = allUsers,
                 EventName = eventName
             };

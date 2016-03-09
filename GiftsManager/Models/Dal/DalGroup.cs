@@ -1,54 +1,52 @@
 ﻿using GiftsManager.Models.Context;
-using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+using GiftsManager.Models.Dal.IDal;
 
 namespace GiftsManager.Models.Dal
 {
     public class DalGroup : IDalGroup
     {
-        private DataBaseContext dbContext;
+        private readonly DataBaseContext _dbContext;
 
         public DalGroup()
         {
-            dbContext = new DataBaseContext();
+            _dbContext = new DataBaseContext();
         }
 
         public void Dispose()
         {
-            dbContext.Dispose();
+            _dbContext.Dispose();
         }
 
-        public int AddGroup(string name, User user)
+        public void AddGroup(string name, User user)
         {
-            User userToModify = dbContext.Users.Where(x => x.Id == user.Id).FirstOrDefault();
+            User userToModify = _dbContext.Users.FirstOrDefault(x => x.Id == user.Id);
 
-            Group group = new Group
+            if (userToModify != null)
             {
-                GroupAdmin = userToModify.Email,
-                Name = name,
-                Users = new List<User>()
-            };
+                Group group = new Group
+                {
+                    GroupAdmin = userToModify.Email,
+                    Name = name,
+                    Users = new List<User>()
+                };
 
-            if (userToModify.Groups == null)
-                userToModify.Groups = new List<Group>();
+                if (userToModify.Groups == null)
+                    userToModify.Groups = new List<Group>();
 
-            userToModify.Groups.Add(group);
-            group.Users.Add(userToModify);
+                userToModify.Groups.Add(@group);
+                @group.Users.Add(userToModify);
 
-            dbContext.Groups.Add(group);
-            dbContext.SaveChanges();
-
-            return group.Id;
+                _dbContext.Groups.Add(@group);
+                _dbContext.SaveChanges();
+            }
         }
 
         public void AddUserToGroup(string group, User user)
         {
             Group g = GetGroupByName(group);
-            User userToModify = dbContext.Users.Where(x => x.Id == user.Id).FirstOrDefault();
+            User userToModify = _dbContext.Users.FirstOrDefault(x => x.Id == user.Id);
 
             if (g != null && userToModify != null)
             {
@@ -57,7 +55,7 @@ namespace GiftsManager.Models.Dal
 
                 userToModify.Groups.Add(g);
                 g.Users.Add(userToModify);
-                dbContext.SaveChanges();
+                _dbContext.SaveChanges();
             }
         }
 
@@ -65,33 +63,29 @@ namespace GiftsManager.Models.Dal
         {
             Group g = GetGroupByName(group);
 
-            if (g != null)
-                return g.Users.ToList();
-            return null;
+            return g?.Users.ToList();
         }
 
         public List<User> GetAllUsersButMe(Group group, User user)
         {
-            if (group != null)
-                return group.Users.Where(x => x.Id != user.Id).ToList();
-            return null;
+            return @group?.Users.Where(x => x.Id != user.Id).ToList();
         }
 
         public void RemoveUserFromGroup(string groupName, string userEmail)
         {
-            var group = dbContext.Groups.Where(x => x.Name.Equals(groupName)).FirstOrDefault();
-            var user = dbContext.Users.Where(x => x.Email.Equals(userEmail)).FirstOrDefault();
+            var group = _dbContext.Groups.FirstOrDefault(x => x.Name.Equals(groupName));
+            var user = _dbContext.Users.FirstOrDefault(x => x.Email.Equals(userEmail));
 
             if (group != null && user != null)
             {
                 group.Users.Remove(user);
-                dbContext.SaveChanges();
+                _dbContext.SaveChanges();
             }
         }
 
         public bool IsGroupExist(string name)
         {
-            if (dbContext.Groups.Where(x => x.Name == name).FirstOrDefault() != null)
+            if (_dbContext.Groups.FirstOrDefault(x => x.Name == name) != null)
                 return true;
             return false;
         }
@@ -99,24 +93,24 @@ namespace GiftsManager.Models.Dal
         public Group GetGroupByName(string name)
         {
             // Eager loading to load automatically the GroupAdmin object
-            return dbContext.Groups.Include("Users.WishList.Event").Where(x => x.Name.Equals(name)).FirstOrDefault();
+            return _dbContext.Groups.Include("Users.WishList.Event").FirstOrDefault(x => x.Name.Equals(name));
         }
 
         public void DeleteGroup(string groupName, string userEmail)
         {
-            Group group = dbContext.Groups.Where(x => x.Name == groupName && x.GroupAdmin == userEmail).FirstOrDefault();
+            Group group = _dbContext.Groups.FirstOrDefault(x => x.Name == groupName && x.GroupAdmin == userEmail);
 
             if (group != null)
             {
-                dbContext.Groups.Remove(group);
-                dbContext.SaveChanges();
+                _dbContext.Groups.Remove(group);
+                _dbContext.SaveChanges();
             }
             
         }
 
         public bool IsAdmin(string userEmail, string groupName)
         {
-            var exist = dbContext.Groups.Where(x => x.Name == groupName && x.GroupAdmin == userEmail).FirstOrDefault();
+            var exist = _dbContext.Groups.FirstOrDefault(x => x.Name == groupName && x.GroupAdmin == userEmail);
 
             return exist != null;
         }

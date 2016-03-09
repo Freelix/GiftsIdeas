@@ -7,17 +7,17 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using GiftsManager.Helper;
-using Microsoft.SqlServer.Server;
+using GiftsManager.Models.Dal.IDal;
 
 namespace GiftsManager.Controllers
 {
     [Authorize]
     public class ProfileController : BaseController
     {
-        private IDalUser dalUser;
-        private IDalGroup dalGroup;
-        private IDalGift dalGift;
-        private IDalEvent dalEvent;
+        private readonly IDalUser _dalUser;
+        private readonly IDalGroup _dalGroup;
+        private readonly IDalGift _dalGift;
+        private readonly IDalEvent _dalEvent;
 
         public ProfileController() : this(new DalUser(), new DalGroup(), new DalGift(), new DalEvent())
         {
@@ -26,15 +26,15 @@ namespace GiftsManager.Controllers
 
         private ProfileController(IDalUser dalUser, IDalGroup dalGroup, IDalGift dalGift, IDalEvent dalEvent)
         {
-            this.dalUser = dalUser;
-            this.dalGroup = dalGroup;
-            this.dalGift = dalGift;
-            this.dalEvent = dalEvent;
+            _dalUser = dalUser;
+            _dalGroup = dalGroup;
+            _dalGift = dalGift;
+            _dalEvent = dalEvent;
         }
         
         public ActionResult UserProfile()
         {
-            return View(GroupHelper.GetGroups(dalUser, HttpContext.User.Identity.Name, false));
+            return View(GroupHelper.GetGroups(_dalUser, HttpContext.User.Identity.Name, false));
         }
 
         #region AjaxPosts
@@ -42,18 +42,18 @@ namespace GiftsManager.Controllers
         [HttpPost]
         public ActionResult LoadEvents(string groupName)
         {
-            var isAdmin = dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName);
-            return PartialView("_DropDownEvent", EventHelper.GetEvents(dalGroup, groupName, isAdmin));
+            var isAdmin = _dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName);
+            return PartialView("_DropDownEvent", EventHelper.GetEvents(_dalGroup, groupName, isAdmin));
         }
 
         [HttpPost]
         public ActionResult CreateEvent(string eventName, string groupName)
         {
-            if (eventName != null && !dalEvent.IsEventExist(eventName, groupName) && dalGroup.IsGroupExist(groupName))
+            if (eventName != null && !_dalEvent.IsEventExist(eventName, groupName) && _dalGroup.IsGroupExist(groupName))
             {
-                dalEvent.AddEvent(eventName, groupName);
-                var isAdmin = dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName);
-                return PartialView("_DropDownEvent", EventHelper.GetEvents(dalGroup, groupName, isAdmin));
+                _dalEvent.AddEvent(eventName, groupName);
+                var isAdmin = _dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName);
+                return PartialView("_DropDownEvent", EventHelper.GetEvents(_dalGroup, groupName, isAdmin));
             }
 
             return Content("");
@@ -62,42 +62,42 @@ namespace GiftsManager.Controllers
         [HttpPost]
         public ActionResult IsAdmin(string groupName)
         {
-            var isAdmin = dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName);
+            var isAdmin = _dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName);
             return Content(isAdmin.ToString());
         }
 
         [HttpPost]
         public bool IsGroupExist(string groupName)
         {
-            return dalGroup.IsGroupExist(groupName);
+            return _dalGroup.IsGroupExist(groupName);
         }
 
         [HttpPost]
         public bool IsEventExist(string eventName, string groupName)
         {
-            return dalEvent.IsEventExist(eventName, groupName);
+            return _dalEvent.IsEventExist(eventName, groupName);
         }
 
         [HttpPost]
         public bool IsGiftExist(string name, string eventName, string groupName)
         {
-            return dalGift.IsGiftExists(name, eventName, groupName, dalUser.GetUserByEmail(HttpContext.User.Identity.Name));
+            return _dalGift.IsGiftExists(name, eventName, groupName, _dalUser.GetUserByEmail(HttpContext.User.Identity.Name));
         }
 
         [HttpPost]
         public bool IsUserExist(string userEmail)
         {
-            return dalUser.IsUserExist(userEmail);
+            return _dalUser.IsUserExist(userEmail);
         }
 
         [HttpPost]
         public ActionResult CreateGroup(string groupName)
         {
-            if (groupName != null && !dalGroup.IsGroupExist(groupName))
+            if (groupName != null && !_dalGroup.IsGroupExist(groupName))
             {
-                dalGroup.AddGroup(groupName, dalUser.GetUserByEmail(HttpContext.User.Identity.Name));
-                var isAdmin = dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName);
-                return PartialView("_DropDownGroup", GroupHelper.GetGroups(dalUser, HttpContext.User.Identity.Name, isAdmin));
+                _dalGroup.AddGroup(groupName, _dalUser.GetUserByEmail(HttpContext.User.Identity.Name));
+                var isAdmin = _dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName);
+                return PartialView("_DropDownGroup", GroupHelper.GetGroups(_dalUser, HttpContext.User.Identity.Name, isAdmin));
             }
 
             return Content("");
@@ -106,15 +106,15 @@ namespace GiftsManager.Controllers
         [HttpPost]
         public ActionResult AddUserToGroup(string groupName, string email)
         {
-            if (groupName != null && email != null && dalUser.IsUserExist(email))
+            if (groupName != null && email != null && _dalUser.IsUserExist(email))
             {
-                var user = dalUser.GetUserByEmail(email);
-                dalGroup.AddUserToGroup(groupName, user);
+                var user = _dalUser.GetUserByEmail(email);
+                _dalGroup.AddUserToGroup(groupName, user);
 
                 ActualGroupViewModel vm = new ActualGroupViewModel()
                 {
-                    ActualGroup = dalGroup.GetGroupByName(groupName),
-                    User = dalUser.GetUserByEmail(HttpContext.User.Identity.Name),
+                    ActualGroup = _dalGroup.GetGroupByName(groupName),
+                    User = _dalUser.GetUserByEmail(HttpContext.User.Identity.Name),
                     IsAdmin = true
                 };
 
@@ -129,9 +129,9 @@ namespace GiftsManager.Controllers
         {
             ActualGroupViewModel vm = new ActualGroupViewModel()
             {
-                ActualGroup = dalGroup.GetGroupByName(groupName),
-                User = dalUser.GetUserByEmail(HttpContext.User.Identity.Name),
-                IsAdmin = dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName)
+                ActualGroup = _dalGroup.GetGroupByName(groupName),
+                User = _dalUser.GetUserByEmail(HttpContext.User.Identity.Name),
+                IsAdmin = _dalGroup.IsAdmin(HttpContext.User.Identity.Name, groupName)
             };
 
             return PartialView("_UsersInGroup", vm);
@@ -148,7 +148,7 @@ namespace GiftsManager.Controllers
         {
             if (newGift.Trim() != string.Empty)
             {
-                dalGift.AddGiftToWishlist(newGift, HttpContext.User.Identity.Name, eventName);
+                _dalGift.AddGiftToWishlist(newGift, HttpContext.User.Identity.Name, eventName);
                 return PartialView("_Gifts", GetGiftsDetails(eventName));
             }
 
@@ -161,12 +161,12 @@ namespace GiftsManager.Controllers
             email = email.Split('(', ')')[1];
 
             if (!email.Equals(HttpContext.User.Identity.Name)) { }
-                dalGroup.RemoveUserFromGroup(groupName, email);
+                _dalGroup.RemoveUserFromGroup(groupName, email);
 
             ActualGroupViewModel vm = new ActualGroupViewModel()
             {
-                ActualGroup = dalGroup.GetGroupByName(groupName),
-                User = dalUser.GetUserByEmail(HttpContext.User.Identity.Name),
+                ActualGroup = _dalGroup.GetGroupByName(groupName),
+                User = _dalUser.GetUserByEmail(HttpContext.User.Identity.Name),
                 IsAdmin = true
             };
 
@@ -178,7 +178,7 @@ namespace GiftsManager.Controllers
         {
             if (!string.IsNullOrEmpty(giftName) && !string.IsNullOrEmpty(eventName))
             {
-                dalGift.RemoveGiftFromWishlist(HttpContext.User.Identity.Name, eventName, giftName);
+                _dalGift.RemoveGiftFromWishlist(HttpContext.User.Identity.Name, eventName, giftName);
                 return PartialView("_Gifts", GetGiftsDetails(eventName));
             }
 
@@ -190,7 +190,7 @@ namespace GiftsManager.Controllers
         {
             if (!string.IsNullOrEmpty(giftName) && !string.IsNullOrEmpty(eventName) && !string.IsNullOrEmpty(groupName))
             {
-                dalGift.RemoveGiftFromReservation(HttpContext.User.Identity.Name, eventName, groupName, giftName);
+                _dalGift.RemoveGiftFromReservation(HttpContext.User.Identity.Name, eventName, groupName, giftName);
                 return PartialView("_Gifts", GetGiftsDetails(eventName));
             }
 
@@ -203,8 +203,8 @@ namespace GiftsManager.Controllers
             if (!string.IsNullOrEmpty(giftName) && !string.IsNullOrEmpty(eventName) && !string.IsNullOrEmpty(groupName)
                 && !string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(giftId) && !string.IsNullOrEmpty(price))
             {
-                dalGift.BuyGift(Convert.ToInt32(giftId), Convert.ToInt32(userId), double.Parse(price, CultureInfo.InvariantCulture), HttpContext.User.Identity.Name);
-                dalGift.RemoveGiftFromReservation(HttpContext.User.Identity.Name, eventName, groupName, giftName);
+                _dalGift.BuyGift(Convert.ToInt32(giftId), Convert.ToInt32(userId), double.Parse(price, CultureInfo.InvariantCulture), HttpContext.User.Identity.Name);
+                _dalGift.RemoveGiftFromReservation(HttpContext.User.Identity.Name, eventName, groupName, giftName);
                 return PartialView("_Gifts", GetGiftsDetails(eventName));
             }
 
@@ -215,7 +215,7 @@ namespace GiftsManager.Controllers
         public ActionResult DeleteGroup(string groupName)
         {
             if (!string.IsNullOrEmpty(groupName))
-                dalGroup.DeleteGroup(groupName, HttpContext.User.Identity.Name);
+                _dalGroup.DeleteGroup(groupName, HttpContext.User.Identity.Name);
 
             return Content("");
         }
@@ -224,7 +224,7 @@ namespace GiftsManager.Controllers
         public ActionResult DeleteEvent(string eventName, string groupName)
         {
             if (!string.IsNullOrEmpty(groupName) && !string.IsNullOrEmpty(eventName))
-                dalEvent.DeleteEvent(eventName, groupName, HttpContext.User.Identity.Name);
+                _dalEvent.DeleteEvent(eventName, groupName, HttpContext.User.Identity.Name);
 
             return Content("");
         }
@@ -235,7 +235,7 @@ namespace GiftsManager.Controllers
 
         private GiftsViewModel GetGiftsDetails(string eventName)
         {
-            var user = dalUser.GetUserByEmail(HttpContext.User.Identity.Name);
+            var user = _dalUser.GetUserByEmail(HttpContext.User.Identity.Name);
 
             GiftsViewModel vm = new GiftsViewModel()
             {

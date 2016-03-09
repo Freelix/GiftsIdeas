@@ -1,18 +1,15 @@
 ﻿using GiftsManager.Models;
 using GiftsManager.Models.Dal;
 using GiftsManager.ViewModels.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using GiftsManager.Models.Dal.IDal;
 
 namespace GiftsManager.Controllers
 {
     public class AuthenticationController : BaseController
     {
-        private IDalUser dalUser;
+        private readonly IDalUser _dalUser;
 
         public AuthenticationController() : this(new DalUser())
         {
@@ -21,7 +18,7 @@ namespace GiftsManager.Controllers
 
         private AuthenticationController(IDalUser dalIoc)
         {
-            dalUser = dalIoc;
+            _dalUser = dalIoc;
         }
 
         public ActionResult SignIn()
@@ -30,7 +27,7 @@ namespace GiftsManager.Controllers
 
             if (HttpContext.User.Identity.IsAuthenticated)
             {
-                viewModel.User = dalUser.GetUserByEmail(HttpContext.User.Identity.Name);
+                viewModel.User = _dalUser.GetUserByEmail(HttpContext.User.Identity.Name);
             }
 
             return View(viewModel);
@@ -41,7 +38,7 @@ namespace GiftsManager.Controllers
         {
             if (viewModel.User != null)
             {
-                User user = dalUser.Authenticate(viewModel.User.Email, viewModel.User.Password);
+                User user = _dalUser.Authenticate(viewModel.User.Email, viewModel.User.Password);
 
                 if (user != null)
                 {
@@ -67,10 +64,9 @@ namespace GiftsManager.Controllers
         [HttpPost]
         public ActionResult SignUp(User user)
         {
-            // TODO: Check if the user exists
             if (ModelState.IsValid)
             {
-                dalUser.AddUser(user);
+                _dalUser.AddUser(user);
                 FormsAuthentication.SetAuthCookie(user.Email, false);
                 return Redirect("/");
             }

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Web;
 
 namespace GiftsManager.Models
 {
-    public class Group
+    public sealed class Group
     {
         public Group()
         {
@@ -23,7 +18,7 @@ namespace GiftsManager.Models
 
         public string GroupAdmin { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
-        public virtual ICollection<Event> Events { get; set; }
+        public ICollection<User> Users { get; set; }
+        public ICollection<Event> Events { get; set; }
     }
 }

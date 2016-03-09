@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 
 namespace GiftsManager.Models.Context
 {
@@ -18,18 +16,18 @@ namespace GiftsManager.Models.Context
             User user = new User()
             {
                 Id = 1,
-                FirstName = "Freelix",
+                FirstName = "Foo",
                 LastName = "Bar",
-                Email = "a@h.com",
+                Email = "foobar@gmail.com",
                 Password = "E2-F3-48-0C-BB-23-31-D8-46-FE-D1-F9-5B-F5-EE-F1"
             };
 
             User otherUser = new User()
             {
                 Id = 2,
-                FirstName = "Other",
-                LastName = "Guy",
-                Email = "h@h.com",
+                FirstName = "Bar",
+                LastName = "Foo",
+                Email = "barfoo@gmail.com",
                 Password = "E2-F3-48-0C-BB-23-31-D8-46-FE-D1-F9-5B-F5-EE-F1"
             };
 
@@ -37,7 +35,7 @@ namespace GiftsManager.Models.Context
             {
                 Id = 1,
                 Name = "Party Mix",
-                GroupAdmin = "a@h.com"
+                GroupAdmin = "foobar@gmail.com"
             };
 
             Event event1 = new Event()
@@ -79,13 +77,17 @@ namespace GiftsManager.Models.Context
                 new Gift { Id = 11, Name = "PS3", Status = Gift.StatusOption.Open, User = otherUser, Event = event1}
             };
 
-            var reservedGifts = new List<Gift>();
-            reservedGifts.Add(wishList2.Where(x => x.Id == 5).FirstOrDefault());
-            reservedGifts.Add(wishList2.Where(x => x.Id == 6).FirstOrDefault());
+            var reservedGifts = new List<Gift>
+            {
+                wishList2.FirstOrDefault(x => x.Id == 5),
+                wishList2.FirstOrDefault(x => x.Id == 6)
+            };
 
-            var boughtGifts = new List<Gift>();
-            boughtGifts.Add(wishList2.Where(x => x.Id == 9).FirstOrDefault());
-            boughtGifts.Add(wishList2.Where(x => x.Id == 10).FirstOrDefault());
+            var boughtGifts = new List<Gift>
+            {
+                wishList2.FirstOrDefault(x => x.Id == 9),
+                wishList2.FirstOrDefault(x => x.Id == 10)
+            };
 
             user.WishList = wishList;
             user.ReservedGifts = reservedGifts;

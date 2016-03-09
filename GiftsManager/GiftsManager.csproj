@@ -138,6 +138,10 @@
     </Compile>
     <Compile Include="Helper\EventHelper.cs" />
     <Compile Include="Helper\GroupHelper.cs" />
+    <Compile Include="Models\Dal\IDal\IDalEvent.cs" />
+    <Compile Include="Models\Dal\IDal\IDalGift.cs" />
+    <Compile Include="Models\Dal\IDal\IDalGroup.cs" />
+    <Compile Include="Models\Dal\IDal\IDalUser.cs" />
     <Compile Include="Resources\Global.fr.Designer.cs">
       <DependentUpon>Global.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -152,7 +156,6 @@
     <Compile Include="Models\Context\DataBaseContext.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Gift.cs" />
-    <Compile Include="Models\Dal\IDal.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

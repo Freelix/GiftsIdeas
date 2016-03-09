@@ -1,11 +1,9 @@
-﻿using GiftsManager.Models.Dal;
-using GiftsManager.ViewModels.Shared;
-using System;
+﻿using GiftsManager.ViewModels.Shared;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using GiftsManager.Models;
+using GiftsManager.Models.Dal.IDal;
 
 namespace GiftsManager.Helper
 {
@@ -13,11 +11,13 @@ namespace GiftsManager.Helper
     {
         public static EventDropDownViewModel GetEvents(IDalGroup dalGroup, string groupName, bool showAddEvent)
         {
-            EventDropDownViewModel vm = new EventDropDownViewModel();
-            vm.Group = dalGroup.GetGroupByName(groupName);
-            vm.IsAdmin = showAddEvent;
+            EventDropDownViewModel vm = new EventDropDownViewModel
+            {
+                Group = dalGroup.GetGroupByName(groupName),
+                IsAdmin = showAddEvent
+            };
 
-            if (vm.Group != null && vm.Group.Events != null)
+            if (vm.Group?.Events != null)
                 vm.Events = new SelectList(vm.Group.Events, "Id", "Name");
 
             return vm;

@@ -1,29 +1,27 @@
 ﻿using GiftsManager.Models.Context;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Web;
+using GiftsManager.Models.Dal.IDal;
 
 namespace GiftsManager.Models.Dal
 {
     public class DalEvent : IDalEvent
     {
-        private DataBaseContext dbContext;
+        private readonly DataBaseContext _dbContext;
 
         public DalEvent()
         {
-            dbContext = new DataBaseContext();
+            _dbContext = new DataBaseContext();
         }
 
         public void Dispose()
         {
-            dbContext.Dispose();
+            _dbContext.Dispose();
         }
 
         public void AddEvent(string name, string groupName)
         {
-            Group group = dbContext.Groups.Where(x => x.Name.Equals(groupName)).FirstOrDefault();
+            Group group = _dbContext.Groups.FirstOrDefault(x => x.Name.Equals(groupName));
 
             Event newEvent = new Event
             {
@@ -31,38 +29,36 @@ namespace GiftsManager.Models.Dal
                 Group = group
             };
 
-            if (group.Events == null)
+            if (group != null && group.Events == null)
+            {
                 group.Events = new List<Event>();
+                group.Events.Add(newEvent);
+            }
 
-            group.Events.Add(newEvent);
-
-            dbContext.Events.Add(newEvent);
-            dbContext.SaveChanges();
+            _dbContext.Events.Add(newEvent);
+            _dbContext.SaveChanges();
         }
 
         public Event GetEventByName(string name)
         {
-            return dbContext.Events.Where(x => x.Name.Equals(name)).FirstOrDefault();
+            return _dbContext.Events.FirstOrDefault(x => x.Name.Equals(name));
         }
 
         public bool IsEventExist(string name, string groupName)
         {
-            if (dbContext.Events.Where(x => x.Group.Name == groupName && x.Name == name).FirstOrDefault() != null)
-                return true;
-            return false;
+            return _dbContext.Events.FirstOrDefault(x => x.Group.Name == groupName && x.Name == name) != null;
         }
 
         public void DeleteEvent(string eventName, string groupName, string userEmail)
         {
             Event currentEvent =
-                dbContext.Events.Where(
-                    x => x.Group.Name == groupName && x.Name == eventName && x.Group.GroupAdmin == userEmail)
-                    .FirstOrDefault();
+                _dbContext.Events
+                    .FirstOrDefault(x => x.Group.Name == groupName && x.Name == eventName && x.Group.GroupAdmin == userEmail);
 
             if (currentEvent != null)
             {
-                dbContext.Events.Remove(currentEvent);
-                dbContext.SaveChanges();
+                _dbContext.Events.Remove(currentEvent);
+                _dbContext.SaveChanges();
             }
         }
     }

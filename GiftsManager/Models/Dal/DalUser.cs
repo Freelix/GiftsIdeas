@@ -1,55 +1,54 @@
 ﻿using GiftsManager.Models.Context;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
+using GiftsManager.Models.Dal.IDal;
 
 namespace GiftsManager.Models.Dal
 {
     public class DalUser : IDalUser
     {
-        private DataBaseContext dbContext;
+        private readonly DataBaseContext _dbContext;
 
         public DalUser()
         {
-            dbContext = new DataBaseContext();
+            _dbContext = new DataBaseContext();
         }
 
         #region Public Functions
 
         public int AddUser(User user)
         {
-            string password = EncodeMD5(user.Password);
+            string password = EncodeMd5(user.Password);
             user.Password = password;
 
-            dbContext.Users.Add(user);
-            dbContext.SaveChanges();
+            _dbContext.Users.Add(user);
+            _dbContext.SaveChanges();
 
             return user.Id;
         }
 
         public User Authenticate(string email, string password)
         {
-            string pass = EncodeMD5(password);
-            return dbContext.Users.FirstOrDefault(u => u.Email == email && u.Password == pass);
+            string pass = EncodeMd5(password);
+            return _dbContext.Users.FirstOrDefault(u => u.Email == email && u.Password == pass);
         }
 
         public void Dispose()
         {
-            dbContext.Dispose();
+            _dbContext.Dispose();
         }
 
         public User GetUserById(int id)
         {
-            return dbContext.Users.FirstOrDefault(u => u.Id == id);
+            return _dbContext.Users.FirstOrDefault(u => u.Id == id);
         }
 
         public User GetUserByEmail(string email)
         {
             // Use Eager Loading
-            return dbContext.Users
+            return _dbContext.Users
                 .Include("WishList.Event")
                 .Include("ReservedGifts.Event")
                 .Include("ReservedGifts.User")
@@ -60,7 +59,7 @@ namespace GiftsManager.Models.Dal
 
         public bool IsUserExist(string email)
         {
-            if (dbContext.Users.Where(u => u.Email.Equals(email)).FirstOrDefault() != null)
+            if (_dbContext.Users.FirstOrDefault(u => u.Email.Equals(email)) != null)
                 return true;
             return false;
         }
@@ -69,7 +68,7 @@ namespace GiftsManager.Models.Dal
 
         #region Private Functions
 
-        private string EncodeMD5(string pass)
+        private static string EncodeMd5(string pass)
         {
             // TODO: Do a better encryption
             string password = "GiftsManager" + pass + "ASP.NET MVC";
