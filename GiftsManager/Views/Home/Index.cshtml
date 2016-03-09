@@ -1,7 +1,7 @@
 ﻿@model GiftsManager.ViewModels.Shared.GroupDropDownViewModel
 
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = @Resources.Global.HomePage;
 }
 
 @section scripts
@@ -25,7 +25,23 @@
 else
 {
     <h2 class="h2Title">
-        Welcome to Gifts Manager <br/><br />
-        Please Sign In to proceed
+        @Resources.Global.Welcome <br/><br />
+        @Resources.Global.PleaseSignIn
     </h2>
 }
+
+<script type="text/javascript">
+
+    tradKeys = {};
+
+    tradKeys.enterCost = "@Resources.Global.EnterCost";
+    tradKeys.bought = "@Resources.Global.Bought";
+    tradKeys.giftBought = "@Resources.Global.GiftBought";
+    tradKeys.select = "@Resources.Global.Select";
+    tradKeys.takeIt = "@Resources.Global.TakeIt";
+    tradKeys.reserveIt = "@Resources.Global.ReserveIt";
+    tradKeys.buyIt = "@Resources.Global.BuyIt";
+    tradKeys.reserved = "@Resources.Global.Reserved";
+    tradKeys.giftReserved = "@Resources.Global.GiftReserved";
+
+</script>

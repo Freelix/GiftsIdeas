@@ -10,7 +10,7 @@ using System.Web.Security;
 
 namespace GiftsManager.Controllers
 {
-    public class AuthenticationController : Controller
+    public class AuthenticationController : BaseController
     {
         private IDalUser dalUser;
 

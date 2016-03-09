@@ -1,5 +1,7 @@
 ﻿$(document).ready(function () {
 
+    var lang = window.tradKeys;
+
     // Groups
 
     function isAdmin(groupName) {
@@ -60,14 +62,14 @@
 
     function openPopupDeleteGroup(groupName) {
         swal({
-            title: "Remove group " + groupName,
-            text: "Are you sure to remove this group",
+            title: lang.removeGroup + " " + groupName,
+            text: lang.removeGroupConfirmation,
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: true,
-            cancelButtonText: "No",
-            confirmButtonText: "Yes"
+            cancelButtonText: lang.no,
+            confirmButtonText: lang.yes
         }, function (confirmation) {
             if (confirmation) {
                 swal.disableButtons();
@@ -75,8 +77,8 @@
 
                 setTimeout(function () {
                     swal({
-                        title: 'Complete',
-                        text: groupName + ' has been removed !',
+                        title: lang.complete,
+                        text: groupName + ' ' + lang.hasBeenRemoved,
                         type: 'success'
                     },
                     function() {
@@ -93,15 +95,15 @@
 
     function createGroupPopup() {
         swal({
-            title: "Enter group name",
+            title: lang.groupName,
             html: '<p><input id="input-field-name"></p>' +
                 '<p class="error"></p>',
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: true,
-            cancelButtonText: "No",
-            confirmButtonText: "Yes"
+            cancelButtonText: lang.no,
+            confirmButtonText: lang.yes
         }, function (confirmation) {
             if (confirmation) {
                 var groupName = $("#input-field-name").val();
@@ -124,8 +126,8 @@
 
                     setTimeout(function () {
                         swal({
-                            title: 'Complete',
-                            text: groupName + ' has been added !',
+                            title: lang.complete,
+                            text: groupName + ' ' + lang.hasBeenAdded,
                             type: 'success'
                         },
                             function () {
@@ -133,7 +135,7 @@
                             });
                     }, 2000);
                 } else {
-                    $(".error").text("This group already exist");
+                    $(".error").text(lang.groupAlreadyExist);
                 }
             }
         });
@@ -167,15 +169,15 @@
 
     function createEventPopup() {
         swal({
-            title: "Enter event name",
+            title: lang.eventName,
             html: '<p><input id="input-field-name"></p>' +
                 '<p class="error"></p>',
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: true,
-            cancelButtonText: "No",
-            confirmButtonText: "Yes"
+            cancelButtonText: lang.No,
+            confirmButtonText: lang.Yes
         }, function (confirmation) {
             if (confirmation) {
                 var eventName = $("#input-field-name").val();
@@ -213,8 +215,8 @@
 
                     setTimeout(function () {
                         swal({
-                            title: 'Complete',
-                            text: eventName + ' has been added !',
+                            title: lang.complete,
+                            text: eventName + lang.hasBeenAdded,
                             type: 'success'
                         },
                             function () {
@@ -222,7 +224,7 @@
                             });
                     }, 2000);
                 } else {
-                    $(".error").text("This event already exist");
+                    $(".error").text(lang.eventAlreadyExist);
                 }
             }
         });
@@ -268,14 +270,14 @@
 
     function openPopupDeleteEvent(eventName, groupName) {
         swal({
-            title: "Remove event " + eventName,
-            text: "Are you sure to remove this event",
+            title: lang.removeEvent + " " + eventName,
+            text: lang.removeEventConfirmation,
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: true,
-            cancelButtonText: "No",
-            confirmButtonText: "Yes"
+            cancelButtonText: lang.no,
+            confirmButtonText: lang.yes
         }, function (confirmation) {
             if (confirmation) {
                 swal.disableButtons();
@@ -283,8 +285,8 @@
 
                 setTimeout(function () {
                     swal({
-                        title: 'Complete',
-                        text: eventName + ' has been removed !',
+                        title: lang.complete,
+                        text: eventName + ' ' + lang.hasBeenRemoved,
                         type: 'success'
                     },
                     function () {
@@ -332,14 +334,14 @@
 
     function openPopupRemoveUser(groupName, userEmail) {
         swal({
-            title: "Remove user " + userEmail,
-            text: "Are you sure to remove this user",
+            title: lang.removeUser + " " + userEmail,
+            text: lang.removeUserConfirmation,
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: true,
-            cancelButtonText: "No",
-            confirmButtonText: "Yes"
+            cancelButtonText: lang.no,
+            confirmButtonText: lang.yes
         }, function (confirmation) {
             if (confirmation) {
                 swal.disableButtons();
@@ -347,8 +349,8 @@
 
                 setTimeout(function() {
                     swal({
-                        title: 'Complete',
-                        text: userEmail + ' has been removed !',
+                        title: lang.complete,
+                        text: userEmail + '' + lang.hasBeenRemoved,
                         type: 'success'
                     });
                 }, 2000);
@@ -381,14 +383,14 @@
 
     function openPopupRemoveFromWishlist(giftName, eventName) {
         swal({
-            title: "Remove gift " + giftName,
-            text: "Are you sure to remove this gift from your wishlist",
+            title: lang.RemoveGift + " " + giftName,
+            text: lang.removeGiftConfirmation,
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: true,
-            cancelButtonText: "No",
-            confirmButtonText: "Yes"
+            cancelButtonText: lang.no,
+            confirmButtonText: lang.yes
         }, function (confirmation) {
             if (confirmation) {
                 swal.disableButtons();
@@ -396,8 +398,8 @@
 
                 setTimeout(function () {
                     swal({
-                        title: 'Complete',
-                        text: giftName + ' has been removed !',
+                        title: lang.complete,
+                        text: giftName + ' ' + lang.hasBeenRemoved,
                         type: 'success'
                     });
                 }, 2000);
@@ -431,14 +433,14 @@
 
     function openPopupRemoveFromReservation(giftName, eventName, groupName) {
         swal({
-            title: "Remove gift " + giftName,
-            text: "Are you sure to remove this item from your reserved gifts",
+            title: lang.removeGift + " " + giftName,
+            text: lang.removeGiftReservation,
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: true,
-            cancelButtonText: "No",
-            confirmButtonText: "Yes"
+            cancelButtonText: lang.no,
+            confirmButtonText: lang.yes
         }, function (confirmation) {
             if (confirmation) {
                 swal.disableButtons();
@@ -446,8 +448,8 @@
 
                 setTimeout(function () {
                     swal({
-                        title: 'Complete',
-                        text: giftName + ' has been removed !',
+                        title: lang.complete,
+                        text: giftName + ' ' + lang.hasBeenRemoved,
                         type: 'success'
                     });
                 }, 2000);
@@ -490,7 +492,7 @@
 
     function openPopupBuyGiftFromReservation(giftName, eventName, groupName, userId, giftId) {
         swal({
-            title: 'Enter the cost of the gift',
+            title: lang.enterCost,
             html: '<p><input id="input-field-price"></p>' +
                 '<p class="error"></p>',
             showCancelButton: true,
@@ -506,13 +508,13 @@
 
                 setTimeout(function() {
                     swal({
-                        title: 'Complete',
-                        text: giftName + ' has been bought !',
+                        title: lang.complete,
+                        text: giftName + ' ' + lang.hasBeenBought,
                         type: 'success'
                     });
                 }, 2000);
             } else {
-                $(".error").text("You must enter a valid price");
+                $(".error").text(lang.priceError);
             }
         });
     }
@@ -521,15 +523,15 @@
 
     function createGiftPopup() {
         swal({
-            title: "Enter gift name",
+            title: lang.giftName,
             html: '<p><input id="input-field-name"></p>' +
                 '<p class="error"></p>',
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: true,
-            cancelButtonText: "No",
-            confirmButtonText: "Yes"
+            cancelButtonText: lang.no,
+            confirmButtonText: lang.yes
         }, function (confirmation) {
             if (confirmation) {
                 var giftName = $("#input-field-name").val();
@@ -571,13 +573,13 @@
 
                     setTimeout(function () {
                         swal({
-                            title: 'Complete',
-                            text: name + ' has been created !',
+                            title: lang.complete,
+                            text: name + ' ' + lang.hasBeenCreated,
                             type: 'success'
                         });
                     }, 2000);
                 } else {
-                    $(".error").text("This gift already exist");
+                    $(".error").text(lang.giftAlreadyExist);
                 }
             }
         });
@@ -616,7 +618,7 @@
 
     function addUserPopup() {
         swal({
-            title: 'Enter the user email',
+            title: lang.enterEmail,
             html: '<p><input id="input-field-name"></p>' +
                 '<p class="error"></p>',
             showCancelButton: true,
@@ -626,7 +628,7 @@
             if (validateEmail(email)) {
                 isUserExist(email);
             } else {
-                $(".error").text("You must enter a valid email");
+                $(".error").text(lang.invalidEmail);
             }
         });
     }
@@ -659,7 +661,7 @@
                     createUser(userEmail);
                     $(".cancel").click();
                 } else {
-                    $(".error").text("This user does not exist");
+                    $(".error").text(lang.userNotExist);
                 }
             }
         });

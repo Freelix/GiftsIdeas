@@ -1,7 +1,7 @@
 ﻿@model GiftsManager.ViewModels.Shared.GroupDropDownViewModel
 
 @{
-    ViewBag.Title = Model.User.FirstName + " " + Model.User.LastName;
+    ViewBag.Title = Model.User.FirstName + " " + Model.User.LastName + " - " + @Resources.Global.GiftsIdeas;
 }
 
 @section scripts
@@ -9,7 +9,7 @@
     <script type="text/javascript" src="~/Assets/Scripts/Pages/Profile/ajaxCalls.js"></script>
 }
 
-<h2 class="h2Title">@Model.User.FirstName Profile</h2>
+<h2 class="h2Title">@Model.User.FirstName @Resources.Global.Profile</h2>
 <input type="hidden" id="userEmail" name="userEmail" value="@Model.User.FirstName @Model.User.LastName (@Model.User.Email)"/>
 
 <div id="DropDownGroupDiv">
@@ -19,3 +19,37 @@
 <div id="GroupUsersDiv"></div>
 <div id="DropDownEventDiv"></div>
 <div id="GiftsDiv"></div>
+
+<script type="text/javascript">
+
+    tradKeys = {};
+
+    tradKeys.removeGroup = "@Resources.Global.RemoveGroup";
+    tradKeys.removeGroupConfirmation = "@Resources.Global.RemoveGroupConfirmation";
+    tradKeys.yes = "@Resources.Global.Yes";
+    tradKeys.no = "@Resources.Global.No";
+    tradKeys.complete = "@Resources.Global.Complete";
+    tradKeys.hasBeenRemoved = "@Resources.Global.HasBeenRemoved";
+    tradKeys.groupName = "@Resources.Global.GroupName";
+    tradKeys.hasBeenAdded = "@Resources.Global.HasBeenAdded";
+    tradKeys.groupAlreadyExist = "@Resources.Global.GroupAlreadyExist";
+    tradKeys.eventName = "@Resources.Global.EventName";
+    tradKeys.eventAlreadyExist = "@Resources.Global.EventAlreadyExist";
+    tradKeys.removeEvent = "@Resources.Global.RemoveEvent";
+    tradKeys.removeEventConfirmation = "@Resources.Global.RemoveEventConfirmation";
+    tradKeys.removeUser = "@Resources.Global.RemoveUser";
+    tradKeys.removeUserConfirmation = "@Resources.Global.RemoveUserConfirmation";
+    tradKeys.removeGift = "@Resources.Global.RemoveGift";
+    tradKeys.removeGiftConfirmation = "@Resources.Global.RemoveGiftConfirmation";
+    tradKeys.removeGiftReservation = "@Resources.Global.RemoveGiftReservation";
+    tradKeys.enterCost = "@Resources.Global.EnterCost";
+    tradKeys.hasBeenBought = "@Resources.Global.HasBeenBought";
+    tradKeys.priceError = "@Resources.Global.PriceError";
+    tradKeys.giftName = "@Resources.Global.GiftName";
+    tradKeys.hasBeenCreated = "@Resources.Global.HasBeenCreated";
+    tradKeys.giftAlreadyExist = "@Resources.Global.GiftAlreadyExist";
+    tradKeys.enterEmail = "@Resources.Global.EnterEmail";
+    tradKeys.invalidEmail = "@Resources.Global.InvalidEmail";
+    tradKeys.userNotExist = "@Resources.Global.UserNotExist";
+
+</script>

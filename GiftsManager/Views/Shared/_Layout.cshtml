@@ -20,7 +20,7 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <title>@ViewBag.Title - GiftsManager</title>
+    <title>@ViewBag.Title - @Resources.Global.GiftsIdeas</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -36,8 +36,10 @@
                 </button>
 
                 <a href="@Url.Action("Index", "Home")" class="navbar-brand page-scroll">
-                    <i class="fa fa-play-circle"></i>  <span class="light">Gifts</span> Ideas
+                    <i class="fa fa-play-circle"></i> <span class="light">Gifts</span> Ideas
                 </a>
+
+                <a href="/">EN</a> | <a href="/fr">FR</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->

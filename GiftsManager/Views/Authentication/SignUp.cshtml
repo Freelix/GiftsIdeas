@@ -1,62 +1,36 @@
 ﻿@model GiftsManager.Models.User
 
 @{
-    ViewBag.Title = "Sign_up";
+    ViewBag.Title = @Resources.Global.SignUp;
 }
 
 <div class="row">
     <div class="col-lg-8 col-lg-offset-2">
         @using (Html.BeginForm("SignUp", "Authentication", FormMethod.Post, new { role = "login", @class="authentication-form" }))
         {
-            @*<img src="http://i.imgur.com/RcmcLv4.png" class="img-responsive" alt="" />
-
-            <div>
-                @Html.TextBoxFor(m => m.FirstName, new { placeholder = "FirstName", @class = "form-control input-lg" })
-                @Html.ValidationMessageFor(m => m.FirstName)
-            </div>
-            <div>
-                @Html.TextBoxFor(m => m.LastName, new { placeholder = "LastName", @class = "form-control input-lg" })
-                @Html.ValidationMessageFor(m => m.LastName)
-            </div>
-            <div>
-                @Html.TextBoxFor(m => m.Email, new { placeholder = "Email", @class = "form-control input-lg" })
-                @Html.ValidationMessageFor(m => m.Email)
-            </div>
-            <div>
-                @Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "form-control input-lg" })
-                @Html.ValidationMessageFor(m => m.Password)
-            </div>
-
-            <div>
-                @Html.PasswordFor(m => m.Password, new { placeholder = "Confirm your Password", @class = "form-control input-lg" })
-                @Html.ValidationMessageFor(m => m.Password)
-            </div>
-
-            <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign Up</button>*@
-
             <div class="form">
-                <div class="header"><h2>Sign Up</h2></div>
+                <div class="header"><h2>@Resources.Global.SignUp</h2></div>
                 <div class="login">
                     <form action="">
                         <ul class="authentication-ul">
                             <li>
-                                <span class="un"><i class="fa fa-user"></i></span>@Html.TextBoxFor(m => m.FirstName, new { placeholder = "FirstName", @class = "text", @required  = "required" })
+                                <span class="un"><i class="fa fa-user"></i></span>@Html.TextBoxFor(m => m.FirstName, new { placeholder = @Resources.Global.FirstName, @class = "text", @required  = "required" })
                                 @Html.ValidationMessageFor(m => m.FirstName)
                             </li>
                             <li>
-                                <span class="un"><i class="fa fa-user"></i></span>@Html.TextBoxFor(m => m.LastName, new { placeholder = "LastName", @class = "text", @required  = "required" })
+                                <span class="un"><i class="fa fa-user"></i></span>@Html.TextBoxFor(m => m.LastName, new { placeholder = @Resources.Global.LastName, @class = "text", @required  = "required" })
                             </li>
                             <li>
                                 <span class="un"><i class="fa fa-user"></i></span>@Html.TextBoxFor(m => m.Email, new { placeholder = "Email", @class = "text", @required  = "required" })
                             </li>
                             <li>
-                                <span class="un"><i class="fa fa-lock"></i></span>@Html.PasswordFor(m => m.Password, new { placeholder = "Password", @class = "text", @required  = "required" })
+                                <span class="un"><i class="fa fa-lock"></i></span>@Html.PasswordFor(m => m.Password, new { placeholder = @Resources.Global.Password, @class = "text", @required  = "required" })
                             </li>
                             <li>
-                                <span class="un"><i class="fa fa-lock"></i></span>@Html.PasswordFor(m => m.Password, new { placeholder = "Confirm your Password", @class = "text", @required  = "required" })
+                                <span class="un"><i class="fa fa-lock"></i></span>@Html.PasswordFor(m => m.Password, new { placeholder = @Resources.Global.ConfirmYourPassword, @class = "text", @required  = "required" })
                             </li>
                             <li>
-                                <input type="submit" value="SIGN UP" class="authentication-btn">
+                                <input type="submit" value="@Resources.Global.SignUp" class="authentication-btn">
                             </li>
                         </ul>
                     </form>

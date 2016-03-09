@@ -1,5 +1,7 @@
 ﻿$(document).ready(function () {
 
+    var lang = window.tradKeys;
+
     // Accordions
 
     $(document).on("click", ".userAnchor", function (e) {
@@ -119,7 +121,7 @@
 
     function popupBuying(id, userId) {
         swal({
-            title: 'Enter the cost of the gift',
+            title: lang.enterCost,
             html: '<p><input id="input-field-price"></p>' +
                 '<p class="error"></p>',
             showCancelButton: true,
@@ -135,8 +137,8 @@
 
                 setTimeout(function() {
                     swal({
-                            title: 'Bought !',
-                            text: 'You have now bought this gift.',
+                            title: lang.bought,
+                            text: lang.giftBought,
                             type: 'success'
                         },
                         function() {
@@ -144,7 +146,7 @@
                         });
                 }, 3000);
             } else {
-                $(".error").text("You must enter a valid price");
+                $(".error").text(lang.priceError);
             }
         });
     }
@@ -154,14 +156,14 @@
         var userId = $(this).data("user");
 
         swal({
-            title: "Take it",
-            text: "Please select an option",
+            title: lang.takeIt,
+            text: lang.select,
             type: "info",
             showCancelButton: true,
             closeOnConfirm: false,
             closeOnCancel: false,
-            cancelButtonText: "Reserve it",
-            confirmButtonText: "Buy it"
+            cancelButtonText: lang.reserveIt,
+            confirmButtonText: lang.buyIt
         }, function (isBought) {
             swal.disableButtons();
 
@@ -172,8 +174,8 @@
 
                 setTimeout(function () {
                     swal({
-                        title: 'Reserved !',
-                        text: 'You have now reserved this gift.',
+                        title: lang.reserved,
+                        text: lang.giftReserved,
                         type: 'success'
                     },
                     function () {

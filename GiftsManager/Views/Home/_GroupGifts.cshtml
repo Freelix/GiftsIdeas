@@ -12,7 +12,7 @@
                     <div class="akordeon-item-head">
                         <div class="akordeon-item-head-container">
                             <div class="akordeon-heading">
-                                <h3>@user.FirstName @user.LastName Gifts Ideas</h3>
+                                <h3>@user.FirstName @user.LastName @Resources.Global.GiftsIdeas</h3>
                                 <input type="hidden" class="giftsAccordionsUserEmail" value="@user.Email"/>
                             </div>
                         </div>
@@ -22,7 +22,7 @@
                             <table class="flat-table">
                                 <tbody>
                                 <tr>
-                                    <th>Gift</th>
+                                    <th>@Resources.Global.Gift</th>
                                     <th>Status</th>
                                 </tr>
                                 @foreach (var item in EventHelper.GetWishListByEvent(user.WishList, Model.EventName))
@@ -33,17 +33,17 @@
                                         @if (item.Status == GiftsManager.Models.Gift.StatusOption.Open)
                                         {
                                             <td>
-                                                Open
+                                                @Resources.Global.Open
                                                 <button type="button" id="@item.Id" data-user="@user.Id" class="btn btn-success btnTakeIt">Take it</button>
                                             </td>
                                         }
                                         else if (item.Status == GiftsManager.Models.Gift.StatusOption.Reserved)
                                         {
-                                            <td>Reserved By @item.Buyer.FirstName @item.Buyer.LastName</td>
+                                            <td>@Resources.Global.ReservedBy @item.Buyer.FirstName @item.Buyer.LastName</td>
                                         }
                                         else if (item.Status == GiftsManager.Models.Gift.StatusOption.Bought)
                                         {
-                                            <td>Bought By @item.Buyer.FirstName @item.Buyer.LastName</td>
+                                            <td>@Resources.Global.BoughtBy @item.Buyer.FirstName @item.Buyer.LastName</td>
                                         }
                                     </tr>
                                 }

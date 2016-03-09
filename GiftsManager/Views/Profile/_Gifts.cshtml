@@ -1,14 +1,14 @@
 ﻿@model GiftsManager.ViewModels.Profile.GiftsViewModel
 
-<h2 class="tablesTitle">WishList</h2>
+<h2 class="tablesTitle">@Resources.Global.WishList</h2>
 
 @if (Model.WishList != null && Model.WishList.Count > 0)
 {
     <table class="flat-table wishlistTable profileTable">
         <tbody>
         <tr>
-            <th>WishList</th>
-            <th>Remove</th>
+            <th>@Resources.Global.WishList</th>
+            <th>@Resources.Global.Remove</th>
         </tr>
         @foreach (var item in Model.WishList)
         {
@@ -21,17 +21,17 @@
     </table>
 }
 
-<a id="addGiftLink" href="#">Add a gift</a>
+<a id="addGiftLink" href="#">@Resources.Global.AddGift</a>
 
 @if (Model.ReservedGifts != null && Model.ReservedGifts.Count > 0)
 {
-    <h2 class="tablesTitle">Reserved Gifts</h2>
+    <h2 class="tablesTitle">@Resources.Global.ReservedGifts</h2>
 
     <table class="flat-table reservedGitfsTable profileTable">
         <tbody>
             <tr>
-                <th>Name</th>
-                <th>User</th>
+                <th>@Resources.Global.Name</th>
+                <th>@Resources.Global.User</th>
                 <th></th>
             </tr>
             @foreach (var item in Model.ReservedGifts)
@@ -53,7 +53,7 @@
 
 @if (Model.BoughtGifts != null && Model.BoughtGifts.Count > 0)
 {
-    <h2 class="tablesTitle">Bought Gifts</h2>
+    <h2 class="tablesTitle">@Resources.Global.BoughtGifts</h2>
 
     <table class="flat-table profileTable">
         <tbody>

@@ -12,7 +12,7 @@ using Microsoft.SqlServer.Server;
 namespace GiftsManager.Controllers
 {
     [Authorize]
-    public class ProfileController : Controller
+    public class ProfileController : BaseController
     {
         private IDalUser dalUser;
         private IDalGroup dalGroup;

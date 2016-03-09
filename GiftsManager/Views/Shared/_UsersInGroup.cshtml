@@ -1,6 +1,6 @@
 ﻿@model GiftsManager.ViewModels.Shared.ActualGroupViewModel
 
-<h2>Members List</h2>
+<h2>@Resources.Global.MembersList</h2>
 
 <div id="usersList">
     <ol class="rounded-list">
@@ -20,6 +20,6 @@
 
     @if (Model.ActualGroup.GroupAdmin.Equals(Model.User.Email) && Model.IsAdmin)
     {
-        <a id="addUserLink" href="#">Add a user</a>
+        <a id="addUserLink" href="#">@Resources.Global.AddUser</a>
     }
 </div>

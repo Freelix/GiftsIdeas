@@ -1,10 +1,12 @@
 ﻿@model GiftsManager.ViewModels.Shared.GroupDropDownViewModel
 
+
+
 <div class="dropdown">
     @if (Model.Groups != null && Model.Groups.Count() > 0)
     {
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownGroupId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Select a group
+            @Resources.Global.SelectGroup
         </button>
 
         if (!Model.ReadOnly)
@@ -15,7 +17,7 @@
 
             <div class="deleteGroupEvent deleteGroup">
                 <i class="fa fa-trash-o fa-lg"></i>
-            </div>   
+            </div>
         }
 
         <ul class="groups dropdown-menu">
@@ -27,6 +29,6 @@
     }
     else
     {
-        <label>There is no group for this user</label>
+        <label>@Resources.Global.NoGroup</label>
     }
 </div>

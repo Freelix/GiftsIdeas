@@ -9,19 +9,19 @@
     @if (Model.Authenticated)
     {
         <li>
-            @Html.ActionLink("Hi " + Model.User.FirstName, "UserProfile", "Profile", null, new { @class = "page-scroll" })
+            @Html.ActionLink(@Resources.Global.Hi + " " + Model.User.FirstName, "UserProfile", "Profile", null, new { @class = "page-scroll" })
         </li>
         <li>
-            @Html.ActionLink("Sign Out", "SignOut", "Authentication", null, new { @class = "page-scroll" })
+            @Html.ActionLink(@Resources.Global.SignOut, "SignOut", "Authentication", null, new { @class = "page-scroll" })
         </li>
     }
     else
     {
         <li>
-            @Html.ActionLink("Sign Up", "SignUp", "Authentication", null, new { @class = "page-scroll" })
+            @Html.ActionLink(@Resources.Global.SignUp, "SignUp", "Authentication", null, new { @class = "page-scroll" })
         </li>
         <li>
-            @Html.ActionLink("Sign In", "SignIn", "Authentication", null, new { @class = "page-scroll" })
+            @Html.ActionLink(@Resources.Global.SignIn, "SignIn", "Authentication", null, new { @class = "page-scroll" })
         </li>
     }
 </ul>

@@ -12,7 +12,7 @@ using GiftsManager.Models;
 
 namespace GiftsManager.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private IDalUser dalUser;
         private IDalGroup dalGroup;
@@ -34,7 +34,10 @@ namespace GiftsManager.Controllers
 
         public ActionResult _Navigation()
         {
-            SignInViewModel viewModel = new SignInViewModel { Authenticated = HttpContext.User.Identity.IsAuthenticated };
+            SignInViewModel viewModel = new SignInViewModel
+            {
+                Authenticated = HttpContext.User.Identity.IsAuthenticated
+            };
             
             if (HttpContext.User.Identity.IsAuthenticated)
             {
