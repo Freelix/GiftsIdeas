@@ -73,7 +73,7 @@ namespace GiftsManager.Models.Dal
 
         public void RemoveUserFromGroup(string groupName, string userEmail)
         {
-            var group = _dbContext.Groups.FirstOrDefault(x => x.Name.Equals(groupName));
+            var group = _dbContext.Groups.Include("Users").FirstOrDefault(x => x.Name.Equals(groupName));
             var user = _dbContext.Users.FirstOrDefault(x => x.Email.Equals(userEmail));
 
             if (group != null && user != null)
@@ -93,7 +93,7 @@ namespace GiftsManager.Models.Dal
         public Group GetGroupByName(string name)
         {
             // Eager loading to load automatically the GroupAdmin object
-            return _dbContext.Groups.Include("Users.WishList.Event").FirstOrDefault(x => x.Name.Equals(name));
+            return _dbContext.Groups.Include("Events").Include("Users.WishList.Event").FirstOrDefault(x => x.Name.Equals(name));
         }
 
         public void DeleteGroup(string groupName, string userEmail)

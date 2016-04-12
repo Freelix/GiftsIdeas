@@ -160,8 +160,10 @@ namespace GiftsManager.Controllers
         {
             email = email.Split('(', ')')[1];
 
-            if (!email.Equals(HttpContext.User.Identity.Name)) { }
+            if (!email.Equals(HttpContext.User.Identity.Name))
+            {
                 _dalGroup.RemoveUserFromGroup(groupName, email);
+            }        
 
             ActualGroupViewModel vm = new ActualGroupViewModel()
             {

@@ -5,10 +5,8 @@
     // Groups
 
     function isAdmin(groupName) {
-        var url = "IsAdmin/";
-
         $.ajax({
-            url: url,
+            url: Constants.Url.IsAdmin,
             type: 'POST',
             data: { groupName: groupName },
             success: function (data) {
@@ -28,12 +26,11 @@
     $(document).on("click", ".groups.dropdown-menu li a", function () {
         var groupText = $(this).text();
         $(this).parents('.dropdown').find('.dropdown-toggle').html(groupText);
-        var url = "ChangeGroup/";
 
         isAdmin(groupText);
 
         $.ajax({
-            url: url,
+            url: Constants.Url.ChangeGroup,
             type: 'POST',
             data: { groupName: groupText },
             success: function (data) {
@@ -56,84 +53,46 @@
     }
 
     $(document).on("click", ".deleteGroup i", function () {
-        var groupText = $("#dropdownGroupId").text();
-        openPopupDeleteGroup(groupText);
+        var groupText = Utils.GetGroup();
+        Popup.showInfoPopup(lang.removeGroup + " " + groupText,
+            lang.removeGroupConfirmation, lang.no, lang.yes, true,
+            openPopupDeleteGroupCallBack.bind(this, groupText));
     });
 
-    function openPopupDeleteGroup(groupName) {
-        swal({
-            title: lang.removeGroup + " " + groupName,
-            text: lang.removeGroupConfirmation,
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: true,
-            cancelButtonText: lang.no,
-            confirmButtonText: lang.yes
-        }, function (confirmation) {
-            if (confirmation) {
-                swal.disableButtons();
-                deleteGroup(groupName);
+    function openPopupDeleteGroupCallBack(groupName, confirmation) {
+        if (confirmation) {
+            swal.disableButtons();
+            deleteGroup(groupName);
 
-                setTimeout(function () {
-                    swal({
-                        title: lang.complete,
-                        text: groupName + ' ' + lang.hasBeenRemoved,
-                        type: 'success'
-                    },
-                    function() {
-                        window.location.reload();
-                    });
-                }, 2000);
-            }
-        });
+            Popup.showSuccess(lang.complete, groupName + ' ' + lang.hasBeenRemoved,
+                Utils.ReloadPage.bind(this));
+        }
     }
 
     $(document).on("click", ".addGroupDiv i", function () {
-        createGroupPopup();
+        Popup.showAddGroupEventPopup(lang.groupName,
+            createGroupPopupCallBack.bind(this));
     });
 
-    function createGroupPopup() {
-        swal({
-            title: lang.groupName,
-            html: '<p><input id="input-field-name"></p>' +
-                '<p class="error"></p>',
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: true,
-            cancelButtonText: lang.no,
-            confirmButtonText: lang.yes
-        }, function (confirmation) {
-            if (confirmation) {
-                var groupName = $("#input-field-name").val();
-                isGroupExist(groupName);
-            }
-        });
+    function createGroupPopupCallBack(confirmation) {
+        if (confirmation) {
+            var groupName = $("#input-field-name").val();
+            isGroupExist(groupName);
+        }
     }
 
     function isGroupExist(groupName) {
-        var url = "IsGroupExist/";
-
         $.ajax({
-            url: url,
+            url: Constants.Url.IsGroupExist,
             type: 'POST',
             data: { groupName: groupName },
             success: function (value) {
-                if (value === "False") {
+                if (value === "False" && !Utils.IsEmpty(groupName)) {
                     swal.disableButtons();
                     createGroup(groupName);
 
-                    setTimeout(function () {
-                        swal({
-                            title: lang.complete,
-                            text: groupName + ' ' + lang.hasBeenAdded,
-                            type: 'success'
-                        },
-                            function () {
-                                window.location.reload();
-                            });
-                    }, 2000);
+                    Popup.showSuccess(lang.complete, groupName + ' ' + lang.hasBeenAdded,
+                        Utils.ReloadPage.bind(this));
                 } else {
                     $(".error").text(lang.groupAlreadyExist);
                 }
@@ -144,85 +103,35 @@
     }
 
     function createGroup(groupName) {
-        var url = "CreateGroup/";
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { groupName: groupName }
-        });
-
-        return false;
+        var data = { groupName: groupName };
+        Utils.SimplePostRequest(Constants.Url.CreateGroup, data);
     }
 
     function deleteGroup(groupName) {
-        var url = "DeleteGroup/";
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { groupName: groupName }
-        });
+        var data = { groupName: groupName };
+        Utils.SimplePostRequest(Constants.Url.DeleteGroup, data);
     }
 
     // Events
 
-    function createEventPopup() {
-        swal({
-            title: lang.eventName,
-            html: '<p><input id="input-field-name"></p>' +
-                '<p class="error"></p>',
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: true,
-            cancelButtonText: lang.No,
-            confirmButtonText: lang.Yes
-        }, function (confirmation) {
-            if (confirmation) {
-                var eventName = $("#input-field-name").val();
-                var groupName = $("#dropdownGroupId").text();
-
-                isEventExist(eventName, groupName);
-            }
-        });
-    }
-
     function createEvent(eventName) {
-        var url = "CreateEvent/";
-        var groupName = $("#dropdownGroupId").text();
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { eventName: eventName, groupName: groupName }
-        });
-
-        return false;
+        var groupName = Utils.GetGroup();
+        var data = { eventName: eventName, groupName: groupName };
+        Utils.SimplePostRequest(Constants.Url.CreateEvent, data);
     }
 
     function isEventExist(eventName, groupName) {
-        var url = "IsEventExist/";
-
         $.ajax({
-            url: url,
+            url: Constants.Url.IsEventExist,
             type: 'POST',
             data: { eventName: eventName, groupName: groupName },
             success: function (value) {
-                if (value === "False") {
+                if (value === "False" && !Utils.IsEmpty(eventName)) {
                     swal.disableButtons();
                     createEvent(eventName);
 
-                    setTimeout(function () {
-                        swal({
-                            title: lang.complete,
-                            text: eventName + lang.hasBeenAdded,
-                            type: 'success'
-                        },
-                            function () {
-                                window.location.reload();
-                            });
-                    }, 2000);
+                    Popup.showSuccess(lang.complete, eventName + ' ' + lang.hasBeenAdded,
+                        Utils.ReloadPage.bind(this));
                 } else {
                     $(".error").text(lang.eventAlreadyExist);
                 }
@@ -233,8 +142,18 @@
     }
 
     $(document).on("click", ".addEventDiv i, #addEventLink", function () {
-        createEventPopup();
+        Popup.showAddGroupEventPopup(lang.eventName,
+            createEventPopupCallBack.bind(this));
     });
+
+    function createEventPopupCallBack(confirmation) {
+        if (confirmation) {
+            var eventName = $("#input-field-name").val();
+            var groupName = Utils.GetGroup();
+
+            isEventExist(eventName, groupName);
+        }
+    }
 
     $(document).on("click", ".events.dropdown-menu li a", function () {
         var text = $(this).text();
@@ -248,10 +167,8 @@
     });
 
     function loadEvents(groupText) {
-        var url = "LoadEvents/";
-
         $.ajax({
-            url: url,
+            url: Constants.Url.LoadEvents,
             type: 'POST',
             data: { groupName: groupText },
             success: function (data) {
@@ -263,67 +180,56 @@
     }
 
     $(document).on("click", ".deleteEvent i", function () {
-        var eventText = $("#dropdownEventId").text();
-        var groupText = $("#dropdownGroupId").text();
-        openPopupDeleteEvent(eventText, groupText);
+        var eventText = Utils.GetEvent();
+        var groupText = Utils.GetGroup();
+
+        Popup.showInfoPopup(lang.removeEvent + " " + eventText,
+            lang.removeEventConfirmation, lang.no, lang.yes, true,
+            openPopupDeleteEventCallBack.bind(this, eventText, groupText));
     });
 
-    function openPopupDeleteEvent(eventName, groupName) {
-        swal({
-            title: lang.removeEvent + " " + eventName,
-            text: lang.removeEventConfirmation,
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: true,
-            cancelButtonText: lang.no,
-            confirmButtonText: lang.yes
-        }, function (confirmation) {
-            if (confirmation) {
-                swal.disableButtons();
-                deleteEvent(eventName, groupName);
+    function openPopupDeleteEventCallBack(eventName, groupName, confirmation) {
+        if (confirmation) {
+            swal.disableButtons();
+            deleteEvent(eventName, groupName);
 
-                setTimeout(function () {
-                    swal({
-                        title: lang.complete,
-                        text: eventName + ' ' + lang.hasBeenRemoved,
-                        type: 'success'
-                    },
-                    function () {
-                        window.location.reload();
-                    });
-                }, 2000);
-            }
-        });
+            Popup.showSuccess(lang.complete, eventName + ' ' + lang.hasBeenRemoved,
+                Utils.ReloadPage.bind(this));
+        }
     }
 
     function deleteEvent(eventName, groupName) {
-        var url = "DeleteEvent/";
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { eventName: eventName, groupName: groupName }
-        });
+        var data = { eventName: eventName, groupName: groupName };
+        Utils.SimplePostRequest(Constants.Url.DeleteEvent, data);
     }
 
     // Remove User
 
     $(document).on("click", "#usersList ol li i", function () {
-        var groupName = $("#dropdownGroupId").text();
+        var groupName = Utils.GetGroup();
         var userEmail = $(this).parent().find("strong").text();
 
-        if ($("#userEmail").val() !== userEmail)
-            openPopupRemoveUser(groupName, userEmail);
+        if ($("#userEmail").val() !== userEmail) {
+            Popup.showInfoPopup(lang.removeUser + " " + userEmail,
+                lang.removeUserConfirmation, lang.no, lang.yes, true,
+                openPopupRemoveUserCallBack.bind(this, userEmail, groupName));
+        }
 
         return false;
     });
 
-    function removeUserFromGroup(groupName, userEmail) {
-        var url = "RemoveUserFromGroup/";
+    function openPopupRemoveUserCallBack(userEmail, groupName, confirmation) {
+        if (confirmation) {
+            swal.disableButtons();
+            removeUserFromGroup(groupName, userEmail);
 
+            Popup.showSuccess(lang.complete, userEmail + ' ' + lang.hasBeenRemoved, null);
+        }
+    }
+
+    function removeUserFromGroup(groupName, userEmail) {
         $.ajax({
-            url: url,
+            url: Constants.Url.RemoveUserFromGroup,
             type: 'POST',
             data: { groupName: groupName, email: userEmail },
             success: function (data) {
@@ -332,77 +238,35 @@
         });
     }
 
-    function openPopupRemoveUser(groupName, userEmail) {
-        swal({
-            title: lang.removeUser + " " + userEmail,
-            text: lang.removeUserConfirmation,
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: true,
-            cancelButtonText: lang.no,
-            confirmButtonText: lang.yes
-        }, function (confirmation) {
-            if (confirmation) {
-                swal.disableButtons();
-                removeUserFromGroup(groupName, userEmail);
-
-                setTimeout(function() {
-                    swal({
-                        title: lang.complete,
-                        text: userEmail + '' + lang.hasBeenRemoved,
-                        type: 'success'
-                    });
-                }, 2000);
-            }
-        });
-    }
-
     // Remove gift from wishlist
 
     $(document).on("click", ".wishlistTable tr td i", function () {
         var giftName = $(this).parent().parent().find("strong").text();
-        var eventName = $("#dropdownEventId").text();
-        openPopupRemoveFromWishlist(giftName, eventName);
+        var eventName = Utils.GetEvent();
+
+        Popup.showInfoPopup(lang.removeGift + " " + giftName,
+                lang.removeGiftConfirmation, lang.no, lang.yes, true,
+                openPopupRemoveFromWishlistCallBack.bind(this, giftName, eventName));
 
         return false;
     });
 
-    function removeFromWishList(giftName, eventName) {
-        var url = "RemoveGiftFromWishlist/";
+    function openPopupRemoveFromWishlistCallBack(giftName, eventName, confirmation) {
+        if (confirmation) {
+            swal.disableButtons();
+            removeFromWishList(giftName, eventName);
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { giftName: giftName, eventName: eventName },
-            success: function (data) {
-                loadGiftsSection(eventName);
-            }
-        });
+            Popup.showSuccess(lang.complete, giftName + ' ' + lang.hasBeenRemoved, null);
+        }
     }
 
-    function openPopupRemoveFromWishlist(giftName, eventName) {
-        swal({
-            title: lang.RemoveGift + " " + giftName,
-            text: lang.removeGiftConfirmation,
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: true,
-            cancelButtonText: lang.no,
-            confirmButtonText: lang.yes
-        }, function (confirmation) {
-            if (confirmation) {
-                swal.disableButtons();
-                removeFromWishList(giftName, eventName);
-
-                setTimeout(function () {
-                    swal({
-                        title: lang.complete,
-                        text: giftName + ' ' + lang.hasBeenRemoved,
-                        type: 'success'
-                    });
-                }, 2000);
+    function removeFromWishList(giftName, eventName) {
+        $.ajax({
+            url: Constants.Url.RemoveGiftFromWishlist,
+            type: 'POST',
+            data: { giftName: giftName, eventName: eventName },
+            success: function () {
+                loadGiftsSection(eventName);
             }
         });
     }
@@ -411,48 +275,32 @@
 
     $(document).on("click", ".reservedGitfsTable tr td i.trash", function () {
         var giftName = $(this).parent().parent().find("strong").first().text();
-        var eventName = $("#dropdownEventId").text();
-        var groupName = $("#dropdownGroupId").text();
-        openPopupRemoveFromReservation(giftName, eventName, groupName);
+        var eventName = Utils.GetEvent();
+        var groupName = Utils.GetGroup();
+
+        Popup.showInfoPopup(lang.removeGift + " " + giftName,
+                lang.removeGiftReservation, lang.no, lang.yes, true,
+                openPopupRemoveFromReservationCallBack.bind(this, giftName, eventName, groupName));
 
         return false;
     });
 
-    function removeFromReservation(giftName, eventName, groupName) {
-        var url = "RemoveGiftFromReservation/";
+    function openPopupRemoveFromReservationCallBack(giftName, eventName, groupName, confirmation) {
+        if (confirmation) {
+            swal.disableButtons();
+            removeFromReservation(giftName, eventName, groupName);
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { giftName: giftName, eventName: eventName, groupName: groupName },
-            success: function (data) {
-                loadGiftsSection(eventName);
-            }
-        });
+            Popup.showSuccess(lang.complete, giftName + ' ' + lang.hasBeenRemoved, null);
+        }
     }
 
-    function openPopupRemoveFromReservation(giftName, eventName, groupName) {
-        swal({
-            title: lang.removeGift + " " + giftName,
-            text: lang.removeGiftReservation,
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: true,
-            cancelButtonText: lang.no,
-            confirmButtonText: lang.yes
-        }, function (confirmation) {
-            if (confirmation) {
-                swal.disableButtons();
-                removeFromReservation(giftName, eventName, groupName);
-
-                setTimeout(function () {
-                    swal({
-                        title: lang.complete,
-                        text: giftName + ' ' + lang.hasBeenRemoved,
-                        type: 'success'
-                    });
-                }, 2000);
+    function removeFromReservation(giftName, eventName, groupName) {
+        $.ajax({
+            url: Constants.Url.RemoveGiftFromReservation,
+            type: 'POST',
+            data: { giftName: giftName, eventName: eventName, groupName: groupName },
+            success: function () {
+                loadGiftsSection(eventName);
             }
         });
     }
@@ -461,20 +309,35 @@
 
     $(document).on("click", ".reservedGitfsTable tr td i.cart", function () {
         var giftName = $(this).parent().parent().find("strong").first().text();
-        var eventName = $("#dropdownEventId").text();
-        var groupName = $("#dropdownGroupId").text();
+        var eventName = Utils.GetEvent();
+        var groupName = Utils.GetGroup();
         var userId = $(this).parent().find(".userId").first().val();
         var giftId = $(this).parent().find(".giftId").first().val();
-        openPopupBuyGiftFromReservation(giftName, eventName, groupName, userId, giftId);
+
+        Popup.showPricePopup(lang.enterCost,
+            openPopupBuyGiftFromReservationCallBack.bind(this, giftName, eventName, groupName, userId, giftId));
 
         return false;
     });
 
-    function buyFromReservation(giftName, eventName, groupName, userId, giftId, price) {
-        var url = "BuyGiftFromReservation/";
+    function openPopupBuyGiftFromReservationCallBack(giftName, eventName, groupName, userId, giftId) {
+        var price = $("#input-field-price").val();
+        price = Utils.FormatNumber(price);
+        $(".error").text("");
 
+        if (Utils.IsNumeric(price)) {
+            swal.disableButtons();
+            buyFromReservation(giftName, eventName, groupName, userId, giftId, price);
+
+            Popup.showSuccess(lang.complete, giftName + ' ' + lang.hasBeenBought, null);
+        } else {
+            $(".error").text(lang.priceError);
+        }
+    }
+
+    function buyFromReservation(giftName, eventName, groupName, userId, giftId, price) {
         $.ajax({
-            url: url,
+            url: Constants.Url.BuyGiftFromReservation,
             type: 'POST',
             data: {
                 giftName: giftName,
@@ -484,71 +347,19 @@
                 giftId: giftId,
                 price: price
             },
-            success: function (data) {
+            success: function () {
                 loadGiftsSection(eventName);
-            }
-        });
-    }
-
-    function openPopupBuyGiftFromReservation(giftName, eventName, groupName, userId, giftId) {
-        swal({
-            title: lang.enterCost,
-            html: '<p><input id="input-field-price"></p>' +
-                '<p class="error"></p>',
-            showCancelButton: true,
-            closeOnConfirm: false
-        }, function () {
-            var price = $("#input-field-price").val();
-            price = formatNumber(price);
-            $(".error").text("");
-
-            if (isNumeric(price)) {
-                swal.disableButtons();
-                buyFromReservation(giftName, eventName, groupName, userId, giftId, price);
-
-                setTimeout(function() {
-                    swal({
-                        title: lang.complete,
-                        text: giftName + ' ' + lang.hasBeenBought,
-                        type: 'success'
-                    });
-                }, 2000);
-            } else {
-                $(".error").text(lang.priceError);
             }
         });
     }
 
     // Add Gift
 
-    function createGiftPopup() {
-        swal({
-            title: lang.giftName,
-            html: '<p><input id="input-field-name"></p>' +
-                '<p class="error"></p>',
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: true,
-            cancelButtonText: lang.no,
-            confirmButtonText: lang.yes
-        }, function (confirmation) {
-            if (confirmation) {
-                var giftName = $("#input-field-name").val();
-                var eventName = $("#dropdownEventId").text();
-                var groupName = $("#dropdownGroupId").text();
-
-                isGiftExist(giftName, eventName, groupName);
-            }
-        });
-    }
-
     function createGift(giftName) {
-        var eventName = $("#dropdownEventId").text();
-        var url = "AddGiftInWishlist/";
+        var eventName = Utils.GetEvent();
 
         $.ajax({
-            url: url,
+            url: Constants.Url.AddGiftInWishlist,
             type: 'POST',
             data: { newGift: giftName, eventName: eventName },
             success: function () {
@@ -560,24 +371,16 @@
     }
 
     function isGiftExist(name, eventName, groupName) {
-        var url = "IsGiftExist/";
-
         $.ajax({
-            url: url,
+            url: Constants.Url.IsGiftExist,
             type: 'POST',
             data: { name: name, eventName: eventName, groupName: groupName },
             success: function(value) {
-                if (value === "False") {
+                if (value === "False" && !Utils.IsEmpty(name)) {
                     swal.disableButtons();
                     createGift(name);
 
-                    setTimeout(function () {
-                        swal({
-                            title: lang.complete,
-                            text: name + ' ' + lang.hasBeenCreated,
-                            type: 'success'
-                        });
-                    }, 2000);
+                    Popup.showSuccess(lang.complete, name + ' ' + lang.hasBeenCreated, null);
                 } else {
                     $(".error").text(lang.giftAlreadyExist);
                 }
@@ -588,17 +391,27 @@
     }
 
     $(document).on("click", "#addGiftLink", function () {
-        createGiftPopup();
+        Popup.showAddGroupEventPopup(lang.giftName,
+            createGiftPopupCallBack.bind(this));
+
         return false;
     });
+
+    function createGiftPopupCallBack(confirmation) {
+        if (confirmation) {
+            var giftName = $("#input-field-name").val();
+            var eventName = Utils.GetEvent();
+            var groupName = Utils.GetGroup();
+
+            isGiftExist(giftName, eventName, groupName);
+        }
+    }
 
     // Load Gift section
 
     function loadGiftsSection(eventName) {
-        var url = "LoadGiftsSection/";
-
         $.ajax({
-            url: url,
+            url: Constants.Url.LoadGiftsSection,
             type: 'POST',
             data: { eventName: eventName},
             success: function(data) {
@@ -612,33 +425,29 @@
     // Add user
 
     $(document).on("click", "#addUserLink", function () {
-        addUserPopup();
+        Popup.showAddGroupEventPopup(lang.enterEmail,
+            addUserPopupCallBack.bind(this));
+
         return false;
     });
 
-    function addUserPopup() {
-        swal({
-            title: lang.enterEmail,
-            html: '<p><input id="input-field-name"></p>' +
-                '<p class="error"></p>',
-            showCancelButton: true,
-            closeOnConfirm: false
-        }, function () {
-            var email = $("#input-field-name").val();
-            if (validateEmail(email)) {
-                isUserExist(email);
+    function addUserPopupCallBack(confirmation) {
+        var email = $("#input-field-name").val();
+
+        if (confirmation) {
+            if (Utils.ValidateEmail(email)) {
+                createUserIfExist(email);
             } else {
                 $(".error").text(lang.invalidEmail);
             }
-        });
+        }    
     }
 
     function createUser(email) {
-        var url = "AddUserToGroup/";
         var group = $('.dropdown:first').find('.dropdown-toggle').html();
 
         $.ajax({
-            url: url,
+            url: Constants.Url.AddUserToGroup,
             type: 'POST',
             data: { groupName: group, email: email },
             success: function (data) {
@@ -649,17 +458,15 @@
         return false;
     }
 
-    function isUserExist(userEmail) {
-        var url = "IsUserExist/";
-
+    function createUserIfExist(userEmail) {
         $.ajax({
-            url: url,
+            url: Constants.Url.IsUserExist,
             type: 'POST',
             data: { userEmail: userEmail },
             success: function(value) {
                 if (value) {
-                    createUser(userEmail);
                     $(".cancel").click();
+                    createUser(userEmail);
                 } else {
                     $(".error").text(lang.userNotExist);
                 }
@@ -667,20 +474,5 @@
         });
 
         return false;
-    }
-
-    function formatNumber(input) {
-        return input.replace(",", ".").replace("$", "").trim();
-    }
-
-    function isNumeric(input) {
-        if (!input)
-            return false;
-        return (input - 0) == input && ("" + input).trim().length > 0;
-    }
-
-    function validateEmail(email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
     }
 });

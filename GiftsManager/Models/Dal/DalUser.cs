@@ -49,6 +49,7 @@ namespace GiftsManager.Models.Dal
         {
             // Use Eager Loading
             return _dbContext.Users
+                .Include("Groups")
                 .Include("WishList.Event")
                 .Include("ReservedGifts.Event")
                 .Include("ReservedGifts.User")

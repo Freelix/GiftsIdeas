@@ -29,10 +29,9 @@
     $(document).on("click", ".groups.dropdown-menu li a", function () {
         var groupText = $(this).text();
         $(this).parents('.dropdown').find('.dropdown-toggle').html(groupText);
-        var url = "/Home/ChangeGroup/";
 
         $.ajax({
-            url: url,
+            url: Constants.Url.Home.ChangeGroup,
             type: 'POST',
             data: { groupName: groupText },
             success: function (data) {
@@ -61,10 +60,8 @@
     });
 
     function loadEvents(groupText) {
-        var url = "Home/LoadEvents/";
-
         $.ajax({
-            url: url,
+            url: Constants.Url.Home.LoadEvents,
             type: 'POST',
             data: { groupName: groupText },
             success: function (data) {
@@ -76,12 +73,11 @@
     }
 
     function loadGiftsSection() {
-        var url = "/Home/LoadGiftsSection/";
-        var groupText = $('#dropdownGroupId').text();
-        var eventName = $("#dropdownEventId").text();
+        var groupText = Utils.GetGroup();
+        var eventName = Utils.GetEvent();
 
         $.ajax({
-            url: url,
+            url: Constants.Url.Home.LoadGiftsSection,
             type: 'POST',
             data: { eventName: eventName, groupName: groupText },
             success: function (data) {
@@ -98,99 +94,50 @@
     // SweetAlert Section
 
     function postDataReserving(giftId, userId) {
-        var groupName = $("#dropdownGroupId").text();
-        var url = "/Home/ReserveGift";
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { id: giftId, userId: userId, groupName: groupName }
-        });
+        var groupName = Utils.GetGroup();
+        var data = { id: giftId, userId: userId, groupName: groupName };
+        Utils.SimplePostRequest(Constants.Url.Home.ReserveGift, data);
     }
 
     function postDataBuying(giftId, userId, price) {
-        var groupName = $("#dropdownGroupId").text();
-        var url = "/Home/BuyGift";
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: { id: giftId, userId: userId, groupName: groupName, price: price }
-        });
+        var groupName = Utils.GetGroup();
+        var data = { id: giftId, userId: userId, groupName: groupName, price: price };
+        Utils.SimplePostRequest(Constants.Url.Home.BuyGift, data);
     }
 
     function popupBuying(id, userId) {
-        swal({
-            title: lang.enterCost,
-            html: '<p><input id="input-field-price"></p>' +
-                '<p class="error"></p>',
-            showCancelButton: true,
-            closeOnConfirm: false
-        }, function () {
-            var price = $("#input-field-price").val();
-            price = formatNumber(price);
-            $(".error").text("");
+        Popup.showPricePopup(lang.enterCost, popupBuyingCallback.bind(this, id, userId));
+    }
 
-            if (isNumeric(price)) {
-                swal.disableButtons();
-                postDataBuying(id, userId, price);
+    function popupBuyingCallback(id, userId) {
+        var price = $("#input-field-price").val();
+        price = Utils.FormatNumber(price);
+        $(".error").text("");
 
-                setTimeout(function() {
-                    swal({
-                            title: lang.bought,
-                            text: lang.giftBought,
-                            type: 'success'
-                        },
-                        function() {
-                            loadGiftsSection();
-                        });
-                }, 3000);
-            } else {
-                $(".error").text(lang.priceError);
-            }
-        });
+        if (Utils.IsNumeric(price)) {
+            swal.disableButtons();
+            postDataBuying(id, userId, price);
+            Popup.showSuccess(lang.bought, lang.giftBought, loadGiftsSection);
+        } else {
+            $(".error").text(lang.priceError);
+        }
     }
 
     $(document).on("click", ".btn.btn-success.btnTakeIt", function () {
         var id = this.id;
         var userId = $(this).data("user");
 
-        swal({
-            title: lang.takeIt,
-            text: lang.select,
-            type: "info",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            closeOnCancel: false,
-            cancelButtonText: lang.reserveIt,
-            confirmButtonText: lang.buyIt
-        }, function (isBought) {
-            swal.disableButtons();
-
-            if (isBought)
-                popupBuying(id, userId);
-            else {
-                postDataReserving(id, userId);
-
-                setTimeout(function () {
-                    swal({
-                        title: lang.reserved,
-                        text: lang.giftReserved,
-                        type: 'success'
-                    },
-                    function () {
-                        loadGiftsSection();
-                    });
-                }, 3000);
-            }
-        });
+        Popup.showInfoPopup(lang.takeIt, lang.select, lang.reserveIt, lang.buyIt, false, popupInfoCallBack.bind(this, id, userId));
     });
 
-    function formatNumber(input) {
-        return input.replace(",", ".").replace("$", "").trim();
-    }
+    function popupInfoCallBack(id, userId, isBought) {
+        swal.disableButtons();
 
-    function isNumeric(input) {
-        return (input - 0) == input && ("" + input).trim().length > 0;
+        if (isBought)
+            popupBuying(id, userId);
+        else {
+            postDataReserving(id, userId);
+            Popup.showSuccess(lang.reserved, lang.giftReserved, loadGiftsSection);
+        }
     }
 });

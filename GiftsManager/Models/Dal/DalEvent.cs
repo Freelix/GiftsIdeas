@@ -21,7 +21,7 @@ namespace GiftsManager.Models.Dal
 
         public void AddEvent(string name, string groupName)
         {
-            Group group = _dbContext.Groups.FirstOrDefault(x => x.Name.Equals(groupName));
+            Group group = _dbContext.Groups.Include("Events").FirstOrDefault(x => x.Name.Equals(groupName));
 
             Event newEvent = new Event
             {
